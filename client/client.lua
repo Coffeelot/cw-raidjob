@@ -168,7 +168,6 @@ end
 RegisterNetEvent('cw-raidjob:client:start', function (data)
     if CurrentCops >= Config.Jobs[data.jobId].MinimumPolice then
         currentJobId = data.jobId
-        print('current job - id:'..currentJobId..' name: '..Config.Jobs[currentJobId].JobName)
         QBCore.Functions.TriggerCallback("cw-raidjob:server:coolc",function(isCooldown)
             if not isCooldown then
                 TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
@@ -202,8 +201,6 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
     local vehicles = Config.Jobs[currentJobId].Vehicles
     if vehicles then 
         for i,v in pairs(Config.Jobs[currentJobId].Vehicles) do
-            print('v', v)
-            print('vehicle coords: '.. v.coords.. ' Vehicle model: '.. v.model)
             local DrawCoord = 1
             if DrawCoord == 1 then
                 VehicleCoords = v.coords
@@ -389,7 +386,6 @@ RegisterNetEvent('cw-raidjob:client:items', function()
 end)
 
 RegisterNetEvent('cw-raidjob:client:reward', function()
-    print('currentJobId', currentJobId)
     local items = Config.Jobs[currentJobId].Items
     print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
