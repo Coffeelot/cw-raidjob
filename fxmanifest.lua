@@ -18,3 +18,4 @@ server_scripts{
 
 
 dependency 'qb-target'
+dependency 'memorygame_2'
