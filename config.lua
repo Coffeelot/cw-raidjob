@@ -251,7 +251,7 @@ local ClownSpecialRewards = {
 local ClownMessages = {
     Sender = 'Unknown',
     Subject = 'HONK HONK',
-    Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me 🗿"
+    Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me"
 }
 
 local ClownJob = {
