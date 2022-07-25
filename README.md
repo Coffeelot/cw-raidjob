@@ -28,7 +28,7 @@ All you need to do to add more jobs is to add new Job objects (with all the requ
 
 ## Item object (see MethItems for example)
 **FetchItemLocation**: Vector4 that sets location of fetch object\
-**FetchItemTime**: Time it takes for the object to "open" after it has been taken\
+**FetchItemTime**: Time it takes for the object to "open" after it has been taken (milliseconds)\
 **FetchItem**: Name of the object you want to use (that shows up in inventory)\  
 **FetchItemProp**: (optional) Name of the in game prop that shows up\
 **FetchItemContents**: Name of the object you want to get (that shows up in inventory). This is the item that is returned to the boss\

@@ -13,7 +13,7 @@ local MethBoss = {
 
 local MethItems = {
     FetchItemLocation = vector4(3828.87, 4471.85, 3.0, 176.02),
-    FetchItemTime = 5, -- time it takes for the item to activate
+    FetchItemTime = 300 * 1000, -- time it takes for the item to activate (milliseconds)
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'meth_cured', -- item that drops from FetchItem after FetchItemTime is over
@@ -67,7 +67,7 @@ local CokeBoss = {
 
 local CokeItems = {
     FetchItemLocation = vector4(-2082.82, -1019.6, 12.62, 180.78),
-    FetchItemTime = 1, -- time it takes for the item to activate
+    FetchItemTime = 500 * 1000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'coke_pure', -- item that drops from FetchItem after FetchItemTime is over
@@ -161,7 +161,7 @@ local WeedBoss = {
 
 local WeedItems = {
     FetchItemLocation = vector4(2194.9, 5601.85, 53.37, 343.94),
-    FetchItemTime = 1, -- time it takes for the item to activate
+    FetchItemTime = 100 * 1000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'weed_notes', -- item that drops from FetchItem after FetchItemTime is over
@@ -211,7 +211,7 @@ local ClownBoss = {
 
 local ClownItems = {
     FetchItemLocation = vector4(-1578.44, 2099.56, 67.54, 343.32),
-    FetchItemTime = 1, -- time it takes for the item to activate
+    FetchItemTime = 200 * 1000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'clown_notes', -- item that drops from FetchItem after FetchItemTime is over
