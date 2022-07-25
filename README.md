@@ -7,7 +7,7 @@ We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/ipl
 COMING SOON
 
 # Job Creation 🔧
-
+All you need to do to add more jobs is to add new Job objects (with all the required things) in the config.lua file. We included several examples showcasing a variety of functionality. Don't forget to add the job object into the *Config.Jobs* object at the bottom of the file! 
 ## Job object (see MethJob for example)
 **JobName**: Variable identifier for the job. Needs to be unique\
 **Boss**: Object that contains info about the quest giving NPC\
