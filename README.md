@@ -71,7 +71,7 @@ Also make sure the images are in qb-inventory>html>images
 
 
 # Dependencies
-* Memory Game - https://github.com/NathanERP/memorygame_2
+* PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
 
 ## Developed by Coffeelot#1586 and Wuggie#1683

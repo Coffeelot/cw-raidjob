@@ -346,38 +346,38 @@ RegisterNetEvent('cw-raidjob:client:items', function()
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
         if result then
             TriggerEvent("qb-dispatch:raidJob")
-            exports["memorygame_2"]:thermiteminigame(8, 3, 2, 20,
-            function() -- Success
-                TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
-                QBCore.Functions.Progressbar("grab_case", Lang:t('info.unlocking_case'), 10000, false, true, {
-                    disableMovement = true,
-                    disableCarMovement = true,
-                    disableMouse = false,
-                    disableCombat = true,
-                }, {
-                }, {}, {}, function() -- Done
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                    RemoveBlip(case)
-                    TriggerServerEvent('cw-raidjob:server:unlock')
-
-                    local playerPedPos = GetEntityCoords(PlayerPedId(), true)
-                    local case = GetClosestObjectOfType(playerPedPos, 10.0, Config.Jobs[currentJobId].Items.FetchItemProp, false, false, false)
-                    if (IsPedActiveInScenario(PlayerPedId()) == false) then
-                    SetEntityAsMissionEntity(case, 1, 1)
-                    DeleteEntity(case)
-                    QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
-                    Itemtimemsg()
-                    hasPackage = true
-                    case = nil
+            exports["ps-ui"]:Thermite(function(success)
+                if success then
+                    TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
+                    QBCore.Functions.Progressbar("grab_case", Lang:t('info.unlocking_case'), 10000, false, true, {
+                        disableMovement = true,
+                        disableCarMovement = true,
+                        disableMouse = false,
+                        disableCombat = true,
+                    }, {
+                    }, {}, {}, function() -- Done
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                        RemoveBlip(case)
+                        TriggerServerEvent('cw-raidjob:server:unlock')
+    
+                        local playerPedPos = GetEntityCoords(PlayerPedId(), true)
+                        local case = GetClosestObjectOfType(playerPedPos, 10.0, Config.Jobs[currentJobId].Items.FetchItemProp, false, false, false)
+                        if (IsPedActiveInScenario(PlayerPedId()) == false) then
+                        SetEntityAsMissionEntity(case, 1, 1)
+                        DeleteEntity(case)
+                        QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
+                        Itemtimemsg()
+                        hasPackage = true
+                        case = nil
+                    end
+                    end, function()
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                        QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
+                    end)
+                else
+                    QBCore.Functions.Notify(Lang:t("error.you_failed"), 'error')
                 end
-                end, function()
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                    QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
-                end)
-            end,
-            function() -- Fail thermite game
-                QBCore.Functions.Notify(Lang:t("error.you_failed"), 'error')
-            end)
+            end,10,5,3) -- Success
         else
             QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
         end
