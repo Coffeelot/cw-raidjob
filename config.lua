@@ -73,8 +73,8 @@ local CokeItems = {
     FetchItemContents = 'coke_pure', -- item that drops from FetchItem after FetchItemTime is over
     FetchItemContentsAmount = 20, -- Amount of FetchItemContent items
     FetchItemMinigame = {
-        Type = 'Maze',
-        Variables = { 20 }
+        Type = 'Circle',
+        Variables = { 4, 20 }
     }
 }
 

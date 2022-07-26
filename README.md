@@ -37,7 +37,7 @@ All you need to do to add more jobs is to add new Job objects (with all the requ
 
 ```
 Circle: NumberOfCircles, MS
-Maze: Hack Time Limit
+Maze: Hack Time Limit (this one seems to be broken, but might get fixed in future PS-UI updates)
 VarHack: Number of Blocks, Time (seconds)
 Thermite: Time, Gridsize (5, 6, 7, 8, 9, 10), IncorrectBlocks
 Scrambler: Type (alphabet, numeric, alphanumeric, greek, braille, runes), Time (Seconds), Mirrored (0: Normal, 1: Normal + Mirrored 2: Mirrored only )
