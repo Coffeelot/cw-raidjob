@@ -8,7 +8,7 @@ COMING SOON
 
 # Job Creation 🔧
 All you need to do to add more jobs is to add new Job objects (with all the required things) in the config.lua file. We included several examples showcasing a variety of functionality. Don't forget to add the job object into the *Config.Jobs* object at the bottom of the file! 
-## Job object (see MethJob for example)
+## Job object (see CokeJob for example)
 **JobName**: Variable identifier for the job. Needs to be unique\
 **Boss**: Object that contains info about the quest giving NPC\
 **Guards**: Object that contains info about the guards\
@@ -19,14 +19,14 @@ All you need to do to add more jobs is to add new Job objects (with all the requ
 **Payout**: Integer of how much the job pays out\
 **SpecialRewards**: (optional) Object of special rewards
 
-## Boss object (see MethBoss for example)
+## Boss object (see CokeBoss for example)
 **coords**: Vector4 that sets location of boss\
 **model**: Ped model of boss. See link at bottom for list\
 **animation**: (optional) Animation for the boss. See link at bottom for list\
 **missionTitle**: String that shows up in game\
 **available = {from, to}**: (optional) Objetct that sets the time the job is available\
 
-## Item object (see MethItems for example)
+## Item object (see CokeItems for example)
 **FetchItemLocation**: Vector4 that sets location of fetch object\
 **FetchItemTime**: Time it takes for the object to "open" after it has been taken (milliseconds)\
 **FetchItem**: Name of the object you want to use (that shows up in inventory)\  
@@ -46,18 +46,18 @@ Scrambler: Type (alphabet, numeric, alphanumeric, greek, braille, runes), Time (
 [ped models](https://docs.fivem.net/docs/game-references/ped-models/#scenario-male)\
 [animation pastebin](https://pastebin.com/6mrYTdQv)
 
-## Guard object (see MethGuards for example) 
+## Guard object (see CokeGuards for example) 
 This contains a list of object that has info on guards, each item consists of
 **coords**:  Vector4 that sets location of guard\
 **model**: model of the npc. See link at bottom for list\
 **weapon**: (optional) name of the weapon this npc will use\  
 
-## Vehicles object (see MethVehicles for example)
+## Vehicles object (see CokeVehicles for example)
 This contains a list of object that has info on vehicles, each item consists of
 **coords**:  Vector4 that sets location of vehicle\
 **model**: model of the vehicle\
 
-## Special Rewards object (see MethSpecialRewards for example)
+## Special Rewards object (see CokeSpecialRewards for example)
 This contains a list of objects that has info on rewards, each item consists of
 **Item**:  variable name of  item (found in items.lua in QB-core)\
 **Amount**: How many of this item is given\

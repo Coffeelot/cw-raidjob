@@ -71,7 +71,11 @@ local CokeItems = {
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'coke_pure', -- item that drops from FetchItem after FetchItemTime is over
-    FetchItemContentsAmount = 20 -- Amount of FetchItemContent items
+    FetchItemContentsAmount = 20, -- Amount of FetchItemContent items
+    FetchItemMinigame = {
+        Type = 'Maze',
+        Variables = { 20 }
+    }
 }
 
 -- These will be used to pick random spots for the guards
