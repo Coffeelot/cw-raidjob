@@ -342,46 +342,104 @@ function SpawnCivilians()
     end
 end
 
+local function MinigameSuccess()
+    TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
+    QBCore.Functions.Progressbar("grab_case", "Unlocking case", 10000, false, true, {
+        disableMovement = true,
+        disableCarMovement = true,
+        disableMouse = false,
+        disableCombat = true,
+    }, {
+    }, {}, {}, function() -- Done
+        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+        RemoveBlip(case)
+        TriggerServerEvent('cw-raidjob:server:unlock')
+
+        local playerPedPos = GetEntityCoords(PlayerPedId(), true)
+        local case = GetClosestObjectOfType(playerPedPos, 10.0, Config.Jobs[currentJobId].Items.FetchItemProp, false, false, false)
+        if (IsPedActiveInScenario(PlayerPedId()) == false) then
+        SetEntityAsMissionEntity(case, 1, 1)
+        DeleteEntity(case)
+        QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
+        Itemtimemsg()
+        hasPackage = true
+        case = nil
+    end
+    end, function()
+        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+        QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
+    end)  
+end
+
+local function MinigameFailiure()
+    QBCore.Functions.Notify(Lang:t("error.you_failed"), 'error')
+end
+
+local function StartMinigame()
+    if Config.Jobs[currentJobId].Items.FetchItemMinigame then
+        local type = Config.Jobs[currentJobId].Items.FetchItemMinigame.Type
+        local variables = Config.Jobs[currentJobId].Items.FetchItemMinigame.Variables
+
+        if type == "Circle" then
+            exports['ps-ui']:Circle(function(success)
+                if success then
+                    MinigameSuccess()
+                else
+                    MinigameFailiure()
+                end
+            end, variables[1], variables[2]) -- NumberOfCircles, MS
+        elseif type == "Maze" then
+            exports['ps-ui']:Maze(function(success)
+                if success then
+                    MinigameSuccess()
+                else
+                    MinigameFailiure()
+                end
+            end, variables[1]) -- Hack Time Limit
+        elseif type == "VarHack" then
+            exports['ps-ui']:VarHack(function(success)
+                if success then
+                    MinigameSuccess()
+                else
+                    MinigameFailiure()
+                end
+             end, variables[1], variables[2]) -- Number of Blocks, Time (seconds)
+        elseif type == "Thermite" then 
+            exports["ps-ui"]:Thermite(function(success)
+                if success then
+                    MinigameSuccess()
+                else
+                    MinigameFailiure()
+                end
+            end, variables[1], variables[2], variables[3]) -- Time, Gridsize (5, 6, 7, 8, 9, 10), IncorrectBlocks
+        elseif type == "Scrambler" then
+            exports['ps-ui']:Scrambler(function(success)
+                if success then
+                    print("success")
+                else
+                    print("fail")
+                end
+            end, variables[1], variables[2], variables[3]) -- Type (alphabet, numeric, alphanumeric, greek, braille, runes), Time (Seconds), Mirrored (0: Normal, 1: Normal + Mirrored 2: Mirrored only )
+        end
+    else
+        exports["ps-ui"]:Thermite(function(success)
+            if success then
+                MinigameSuccess()
+            else
+                MinigameFailiure()
+            end
+        end, 8, 5, 3) -- Success       
+    end
+end
+
 RegisterNetEvent('cw-raidjob:client:items', function()
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
         if result then
             TriggerEvent("qb-dispatch:raidJob")
-            exports["ps-ui"]:Thermite(function(success)
-                if success then
-                    TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
-                    QBCore.Functions.Progressbar("grab_case", Lang:t('info.unlocking_case'), 10000, false, true, {
-                        disableMovement = true,
-                        disableCarMovement = true,
-                        disableMouse = false,
-                        disableCombat = true,
-                    }, {
-                    }, {}, {}, function() -- Done
-                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                        RemoveBlip(case)
-                        TriggerServerEvent('cw-raidjob:server:unlock')
-    
-                        local playerPedPos = GetEntityCoords(PlayerPedId(), true)
-                        local case = GetClosestObjectOfType(playerPedPos, 10.0, Config.Jobs[currentJobId].Items.FetchItemProp, false, false, false)
-                        if (IsPedActiveInScenario(PlayerPedId()) == false) then
-                        SetEntityAsMissionEntity(case, 1, 1)
-                        DeleteEntity(case)
-                        QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
-                        Itemtimemsg()
-                        hasPackage = true
-                        case = nil
-                    end
-                    end, function()
-                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                        QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
-                    end)
-                else
-                    QBCore.Functions.Notify(Lang:t("error.you_failed"), 'error')
-                end
-            end,10,5,3) -- Success
+            StartMinigame()
         else
-            QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
+            MinigameFailiure()
         end
-
     end, "casekey")
 end)
 
