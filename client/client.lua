@@ -415,9 +415,9 @@ local function StartMinigame()
         elseif type == "Scrambler" then
             exports['ps-ui']:Scrambler(function(success)
                 if success then
-                    print("success")
+                    MinigameSuccess()
                 else
-                    print("fail")
+                    MinigameFailiure()
                 end
             end, variables[1], variables[2], variables[3]) -- Type (alphabet, numeric, alphanumeric, greek, braille, runes), Time (Seconds), Mirrored (0: Normal, 1: Normal + Mirrored 2: Mirrored only )
         end
