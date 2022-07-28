@@ -84,4 +84,7 @@ Also make sure the images are in qb-inventory>html>images
 * qb-target - https://github.com/BerkieBb/qb-target
 
 ## Developed by Coffeelot#1586 and Wuggie#1683
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)\
+[Support](https://discord.gg/FJY4mtjaKr)
+
 Inspired by the [PS-Methjob](https://github.com/iplocator/ps-methrun)
