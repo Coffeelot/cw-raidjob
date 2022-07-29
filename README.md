@@ -55,6 +55,8 @@ This contains a list of object that has info on guards, each item consists of
 **coords**:  Vector4 that sets location of guard\
 **model**: model of the npc. See link at bottom for list\
 **weapon**: (optional) name of the weapon this npc will use\  
+**accuracy**: (optional) how good they are at shooting. Default is 75\  
+**armor**: (optional) how much extra armor they have. Default is 50\  
 
 ## Vehicles object (see CokeVehicles for example)
 This contains a list of object that has info on vehicles, each item consists of
