@@ -112,16 +112,16 @@ local CokeCivilians = {
 }
 
 local CokeGuards = {
-        { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun'},
-        { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
-        { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
-        { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun'},
-        { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
-        { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
-        { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun'},
-        { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(-2082.71, -1012.14, 5.88, 159.0), model = 's_m_m_highsec_01', weapon = 'WEAPON_PISTOL50'},
-        { coords = vector4(-2041.38, -1032.34, 11.98, 88.73), model = 's_m_m_highsec_01', weapon = 'WEAPON_SMG'},
+    { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun', armor = 100 },
+    { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
+    { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
+    { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun', armor = 100 },
+    { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
+    { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
+    { model = 's_m_m_highsec_02', weapon = 'weapon_pumpshotgun', armor = 100 },
+    { model = 's_m_m_highsec_02', weapon = 'WEAPON_PISTOL'},
+    { coords = vector4(-2082.71, -1012.14, 5.88, 159.0), model = 's_m_m_highsec_01', weapon = 'WEAPON_PISTOL50'},
+    { coords = vector4(-2041.38, -1032.34, 11.98, 88.73), model = 's_m_m_highsec_01', weapon = 'WEAPON_SMG', armor = 100 },
 }
 
 local CokeVehicles = {
@@ -173,14 +173,15 @@ local WeedItems = {
 }
 
 local WeedGuards = {
-        { coords = vector4(2220.62, 5614.49, 54.72, 100.83), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2221.24, 5602.82, 54.76, 153.79), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2211.45, 5574.69, 53.58, 23.77), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2195.79, 5574.87, 53.83, 0.81), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2246.8, 5561.69, 52.1, 226.76), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2250.25, 5563.66, 52.15, 186.65), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL'},
-        { coords = vector4(2181.14, 5554.24, 53.93, 167.81), model = 'a_m_m_hillbilly_01', weapon = 'WEAPON_DBSHOTGUN'},
+    { coords = vector4(2220.62, 5614.49, 54.72, 100.83), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2221.24, 5602.82, 54.76, 153.79), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2211.45, 5574.69, 53.58, 23.77), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2195.79, 5574.87, 53.83, 0.81), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2246.8, 5561.69, 52.1, 226.76), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2250.25, 5563.66, 52.15, 186.65), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+    { coords = vector4(2181.14, 5554.24, 53.93, 167.81), model = 'a_m_m_hillbilly_01', weapon = 'WEAPON_DBSHOTGUN', accuracy = 30, armor = 25 },
 }
+
 
 local WeedVehicles = {
     { coords = vector4(2207.95, 5600.41, 53.78, 354.28), model = 'pony2'}

@@ -267,6 +267,14 @@ function SpawnGuards()
             guardPosition = listOfGuardPositions[random]
             table.remove(listOfGuardPositions,random)
         end
+        local accuracy = 75
+        if v.accuracy then
+            accuracy = v.accuracy
+        end
+        local armor = 50
+        if v.armor then
+            armor = v.armor
+        end
         -- print('Guard location: ', guardPosition)
         loadModel(v.model)
         npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
@@ -279,8 +287,8 @@ function SpawnGuards()
         SetEntityAsMissionEntity(npcs['npcguards'][k])
         SetEntityVisible(npcs['npcguards'][k], true)
         SetPedRelationshipGroupHash(npcs['npcguards'][k], 'npcguards')
-        SetPedAccuracy(npcs['npcguards'][k], 75)
-        SetPedArmour(npcs['npcguards'][k], 100)
+        SetPedAccuracy(npcs['npcguards'][k], accuracy)
+        SetPedArmour(npcs['npcguards'][k], armor)
         SetPedCanSwitchWeapon(npcs['npcguards'][k], true)
         SetPedDropsWeaponsWhenDead(npcs['npcguards'][k], false)
         SetPedFleeAttributes(npcs['npcguards'][k], 0, false)
