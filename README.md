@@ -2,6 +2,10 @@
 
 We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/iplocator/ps-methrun) was such a great template. We decided to generalize it so more jobs with similar structure could be created without any coding. We kept the original job in the config as an example. 
 
+# Developed by Coffeelot and Wuggie
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
+[Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
+
 # Preview 
 
 COMING SOON
@@ -82,9 +86,5 @@ Also make sure the images are in qb-inventory>html>images
 # Dependencies
 * PS-UI - https://github.com/Project-Sloth/ps-ui/blob/main/README.md
 * qb-target - https://github.com/BerkieBb/qb-target
-
-## Developed by Coffeelot#1586 and Wuggie#1683
-[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)\
-[Support and updates](https://discord.gg/FJY4mtjaKr)
 
 Inspired by the [PS-Methjob](https://github.com/iplocator/ps-methrun)
