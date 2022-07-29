@@ -8,7 +8,7 @@ We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/ipl
 
 # Preview 
 
-[![YOUTUBE VIDEO](http://img.youtube.com/vi/0_Rh1BkwCw8/0.jpg)](https://youtu.be/0_Rh1BkwCw8)
+[![YOUTUBE VIDEO](http://img.youtube.com/vi/QXkydMqS_ok/0.jpg)](https://youtu.be/QXkydMqS_ok)
 
 # Job Creation 🔧
 All you need to do to add more jobs is to add new Job objects (with all the required things) in the config.lua file. We included several examples showcasing a variety of functionality. Don't forget to add the job object into the *Config.Jobs* object at the bottom of the file! 
