@@ -12,6 +12,7 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
         currentJobId = jobId
 		Player.Functions.RemoveMoney('cash', Config.Jobs[currentJobId].RunCost, "Running Costs")
         Player.Functions.AddItem("casekey", 1)
+        print('current job - id:'..currentJobId..' name: '..Config.Jobs[currentJobId].JobName)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
 		TriggerClientEvent("cw-raidjob:client:runactivate", src)
         TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
@@ -46,33 +47,32 @@ end)
 RegisterServerEvent('cw-raidjob:server:unlock', function ()
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
+    local items = Config.Jobs[currentJobId].Items
 
-	Player.Functions.AddItem("securitycase", 1)
+	Player.Functions.AddItem(items.FetchItem, 1)
     Player.Functions.RemoveItem("casekey", 1)
-	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["securitycase"], "add")
+	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "add")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "remove")
 end)
 
-RegisterServerEvent('cw-raidjob:server:rewardpayout', function ()
+RegisterServerEvent('cw-raidjob:server:rewardpayout', function (jobId)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    local items = Config.Jobs[currentJobId].Items
+    local items = Config.Jobs[jobId].Items
 
     Player.Functions.RemoveItem(items.FetchItemContents, items.FetchItemContentsAmount)
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "remove")
 
-    Player.Functions.AddMoney('cash', Config.Jobs[currentJobId].Payout)
+    Player.Functions.AddMoney('cash', Config.Jobs[jobId].Payout)
 
-    if Config.Jobs[currentJobId].SpecialRewards ~= nil then
-        for k, v in pairs(Config.Jobs[currentJobId].SpecialRewards) do
-            local chance = math.random(0,100)
-            if chance < v.Chance then 
-                Player.Functions.AddItem(v.Item, v.Amount)
-                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[v.Item], "add")
-            end
+    for k, v in pairs(Config.Jobs[jobId].SpecialRewards) do
+        local chance = math.random(0,100)
+        print('chance for '..v.Item..': '..chance)
+        if chance < v.Chance then 
+            Player.Functions.AddItem(v.Item, v.Amount)
+            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[v.Item], "add")
         end
     end
-    currentJobId = nil;
 end)
 
 RegisterServerEvent('cw-raidjob:server:givecaseitems', function ()
@@ -84,4 +84,5 @@ RegisterServerEvent('cw-raidjob:server:givecaseitems', function ()
     Player.Functions.RemoveItem(items.FetchItem, 1)
 	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "add")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
+    currentJobId = nil;
 end)

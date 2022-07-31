@@ -2,6 +2,9 @@
 
 We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/iplocator/ps-methrun) was such a great template. We decided to generalize it so more jobs with similar structure could be created without any coding. We kept the original job in the config as an example. 
 
+The job is simple:
+You find the mission giver NPC (at the time of day when you are willing to give you the mission). Pay the fee. You'll get an email with info and a GPS marker. Go there, shoot some dudes up and steal the loot. The first security layer is a puzzle, the second is timed. Make sure you DO NOT bring this close to the boss while it's ticking. After the mission-specific timer is over the case will open and you will recieve the item the boss wants. You can turn it in at any time and get the reward.
+
 # Developed by Coffeelot and Wuggie
 [More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
 [Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
@@ -50,6 +53,9 @@ Scrambler: Type (alphabet, numeric, alphanumeric, greek, braille, runes), Time (
 [ped models](https://docs.fivem.net/docs/game-references/ped-models/#scenario-male)\
 [animation pastebin](https://pastebin.com/6mrYTdQv)
 
+## (optional) GuardPositionObject (see CokeGuardPositions for example) 
+This contains a list of vecors where NPCs will spawn if they have not been given a specific coordinate in the following object
+
 ## Guard object (see CokeGuards for example) 
 This contains a list of object that has info on guards, each item consists of
 **coords**:  Vector4 that sets location of guard\
@@ -79,6 +85,8 @@ Items to add to qb-core>shared>items.lua
 ["casekey"] =             {["name"] = "casekey",            ["label"] = "Case Key",             ["weight"] = 0, ["type"] = "item", ["image"] = "key1.png", ["unique"] = true, ["useable"] = false, ['shouldClose'] = false, ["combinable"] = nil, ["description"] = "Key for a case"},
 ["weed_notes"] =          {["name"] = "weed_notes",         ["label"] = "Strange Documents",                  ["weight"] = 100, ["type"] = "item", ["image"] = "deliverynote.png", ["unique"] = false, ["useable"] = false, ['shouldClose'] = false, ["combinable"] = nil, ["description"] = "Documents that is clearly above your paygrade"},
 ["clown_notes"] =          {["name"] = "clown_notes",         ["label"] = "Strange Documents",                  ["weight"] = 100, ["type"] = "item", ["image"] = "cayo_deliverynote.png", ["unique"] = false, ["useable"] = false, ['shouldClose'] = false, ["combinable"] = nil, ["description"] = "Documents that is clearly above your paygrade. Honk honk"},
+["art_notes"] =          {["name"] = "art_notes",         ["label"] = "Strange Documents",                  ["weight"] = 100, ["type"] = "item", ["image"] = "cayo_deliverynote.png", ["unique"] = false, ["useable"] = false, ['shouldClose'] = false, ["combinable"] = nil, ["description"] = "Documents that is clearly above your paygrade."},
+
 
 ```
 

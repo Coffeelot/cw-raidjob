@@ -1,7 +1,10 @@
 Config = {}
 
 Config.Cooldown = 1 --- Cooldown until next allowed meth run
-
+Config.DefaultValues = {
+    armor = 10,
+    accuracy = 40,
+}
 --- METH RUN ---
 
 local MethBoss = {
@@ -13,11 +16,15 @@ local MethBoss = {
 
 local MethItems = {
     FetchItemLocation = vector4(3828.87, 4471.85, 3.0, 176.02),
-    FetchItemTime = 300 * 1000, -- time it takes for the item to activate (milliseconds)
+    FetchItemTime = 60000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'meth_cured', -- item that drops from FetchItem after FetchItemTime is over
-    FetchItemContentsAmount = 20 -- Amount of FetchItemContent items
+    FetchItemContentsAmount = 20, -- Amount of FetchItemContent items
+    FetchItemMinigame = {
+        Type = 'Thermite',
+        Variables = { 20, 5, 4 }
+    }
 }
 
 local MethGuards = {
@@ -43,7 +50,6 @@ local MethSpecialRewards = {
 }
 
 local MethJobPayout = math.random(150000, 220000)
-
 local MethJob = {
     JobName = 'meth',
     Boss = MethBoss,
@@ -51,7 +57,7 @@ local MethJob = {
     Vehicles = MethVehicles,
     Items = MethItems,
     MinimumPolice = 0,
-    RunCost = 1500,
+    RunCost = 10000,
     Payout =  MethJobPayout,
     SpecialRewards = MethSpecialRewards  
 }
@@ -67,14 +73,14 @@ local CokeBoss = {
 
 local CokeItems = {
     FetchItemLocation = vector4(-2082.82, -1019.6, 12.62, 180.78),
-    FetchItemTime = 500 * 1000, -- time it takes for the item to activate
+    FetchItemTime = 120000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'coke_pure', -- item that drops from FetchItem after FetchItemTime is over
     FetchItemContentsAmount = 20, -- Amount of FetchItemContent items
     FetchItemMinigame = {
         Type = 'Circle',
-        Variables = { 4, 20 }
+        Variables = { 2, 20 }
     }
 }
 
@@ -148,7 +154,7 @@ local CokeJob = {
     Vehicles = CokeVehicles,
     Items = CokeItems,
     MinimumPolice = 0,
-    RunCost = 1500,
+    RunCost = 15000,
     Payout =  math.random(150000, 220000),
     SpecialRewards = CokeSpecialRewards,
     Messages = CokeMessages 
@@ -165,7 +171,7 @@ local WeedBoss = {
 
 local WeedItems = {
     FetchItemLocation = vector4(2194.9, 5601.85, 53.37, 343.94),
-    FetchItemTime = 100 * 1000, -- time it takes for the item to activate
+    FetchItemTime = 30000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'weed_notes', -- item that drops from FetchItem after FetchItemTime is over
@@ -173,15 +179,14 @@ local WeedItems = {
 }
 
 local WeedGuards = {
-    { coords = vector4(2220.62, 5614.49, 54.72, 100.83), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2221.24, 5602.82, 54.76, 153.79), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2211.45, 5574.69, 53.58, 23.77), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2195.79, 5574.87, 53.83, 0.81), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2246.8, 5561.69, 52.1, 226.76), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2250.25, 5563.66, 52.15, 186.65), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
-    { coords = vector4(2181.14, 5554.24, 53.93, 167.81), model = 'a_m_m_hillbilly_01', weapon = 'WEAPON_DBSHOTGUN', accuracy = 30, armor = 25 },
+        { coords = vector4(2220.62, 5614.49, 54.72, 100.83), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2221.24, 5602.82, 54.76, 153.79), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2211.45, 5574.69, 53.58, 23.77), model = 'a_m_m_hillbilly_02', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2195.79, 5574.87, 53.83, 0.81), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2246.8, 5561.69, 52.1, 226.76), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2250.25, 5563.66, 52.15, 186.65), model = 'a_m_m_rurmeth_01', weapon = 'WEAPON_PISTOL', accuracy = 30, armor = 25 },
+        { coords = vector4(2181.14, 5554.24, 53.93, 167.81), model = 'a_m_m_hillbilly_01', weapon = 'WEAPON_DBSHOTGUN', accuracy = 30, armor = 25 },
 }
-
 
 local WeedVehicles = {
     { coords = vector4(2207.95, 5600.41, 53.78, 354.28), model = 'pony2'}
@@ -216,7 +221,7 @@ local ClownBoss = {
 
 local ClownItems = {
     FetchItemLocation = vector4(-1578.44, 2099.56, 67.54, 343.32),
-    FetchItemTime = 200 * 1000, -- time it takes for the item to activate
+    FetchItemTime = 30000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
     FetchItemProp = 'prop_security_case_01', -- item (world object)
     FetchItemContents = 'clown_notes', -- item that drops from FetchItem after FetchItemTime is over
@@ -256,7 +261,7 @@ local ClownSpecialRewards = {
 local ClownMessages = {
     Sender = 'Unknown',
     Subject = 'HONK HONK',
-    Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me"
+    Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me 🗿"
 }
 
 local ClownJob = {
@@ -273,9 +278,103 @@ local ClownJob = {
     Messages = ClownMessages
 }
 
+-- Art job
+local ArtBoss = {
+    coords = vector4(-1107.19, 158.53, 63.04, 40.49),
+    model = 'a_m_m_golfer_01',
+    missionTitle = "Accept art theft job",
+    animation = 'WORLD_HUMAN_GOLF_PLAYER', -- OPTIONAL https://pastebin.com/6mrYTdQv
+    available = {from = 14, to = 19}
+}
+
+local ArtItems = {
+    FetchItemLocation = vector4(8.4, 529.35, 169.64, 53.86),
+    FetchItemTime = 180000, -- time it takes for the item to activate
+    FetchItem = 'securityCase', -- item (inventory)
+    FetchItemProp = 'ex_prop_crate_art_bc', -- item (world object)
+    FetchItemContents = 'goldnugget', -- item that drops from FetchItem after FetchItemTime is over
+    FetchItemContentsAmount = 1, -- Amount of FetchItemContent items
+    FetchItemMinigame = {
+        Type = 'Circle',
+        Variables = { 2, 10 }
+    }
+}
+
+-- These will be used to pick random spots for the guards
+local ArtGuardPositions = {
+    vector4(1.52, 523.65, 170.62, 309.18),
+    vector4(-6.97, 509.82, 170.63, 135.18),
+    vector4(-1.14, 518.09, 170.63, 302.91),
+    vector4(9.01, 519.67, 170.23, 221.82),
+    vector4(24.15, 520.22, 170.23, 217.78),
+    vector4(15.68, 529.01, 170.63, 293.99),
+    vector4(19.14, 530.15, 174.63, 222.93),
+    vector4(10.95, 523.67, 174.63, 206.1),
+    vector4(-13.21, 510.2, 174.63, 138.64),
+    vector4(9.04, 540.48, 176.03, 12.24),
+    vector4(3.82, 533.99, 170.62, 21.58),
+    vector4(-9.31, 531.47, 170.62, 289.24),
+    vector4(22.25, 535.58, 170.63, 112.54),
+}
+
+local ArtCivilians = {
+    { coords = vector4(24.15, 520.22, 170.23, 217.78), model = 'g_m_m_mexboss_02',animation = 'PROP_HUMAN_BBQ' },
+    { coords = vector4(21.95, 520.2, 170.23, 229.74), model = 'a_f_y_beach_01', animation = 'WORLD_HUMAN_PARTYING' },
+    { coords = vector4(25.37, 521.02, 170.23, 150.87), model = 'a_f_y_beach_01', animation = 'WORLD_HUMAN_PARTYING' },
+    { coords = vector4(13.92, 521.27, 170.23, 192.74), model = 'a_f_m_beach_01', animation = 'WORLD_HUMAN_SMOKING_POT' },
+}
+
+local ArtGuards = {
+    { model = 'g_m_y_mexgang_01', weapon = 'weapon_pistol50', armor = 100 },
+    { model = 'ig_ramp_mex', weapon = 'weapon_vintagepistol'},
+    { model = 'ig_ramp_mex', weapon = 'weapon_vintagepistol'},
+    { model = 'ig_ramp_mex', weapon = 'weapon_pumpshotgun', armor = 100 },
+    { model = 'g_m_y_mexgoon_03', weapon = 'weapon_vintagepistol'},
+    { model = 'g_m_y_mexgoon_03', weapon = 'WEAPON_PISTOL'},
+    { model = 'g_m_y_mexgoon_03', weapon = 'weapon_pumpshotgun', armor = 100 },
+    { model = 'g_m_y_pologoon_01', weapon = 'WEAPON_PISTOL'},
+    { coords = vector4(0.81, 521.57, 170.62, 220.58), model = 'a_m_y_mexthug_01', weapon = 'weapon_microsmg'},
+    { coords = vector4(-6.92, 529.97, 175.04, 198.58), model = 'a_m_y_mexthug_01', weapon = 'weapon_microsmg', armor = 100 },
+}
+
+local ArtVehicles = {
+    { coords = vector4(13.72, 547.47, 176.08, 78.14), model = 'adder'}
+}
+
+local ArtSpecialRewards = {
+    { Item = 'cokebaggy', Amount = math.random(20, 30), Chance = 90 },
+    { Item = 'pistol_luxuryfinish', Amount = 1, Chance = 5 },
+    { Item = 'combatpistol_luxuryfinish', Amount = 1, Chance = 5 },
+    { Item = 'appistol_luxuryfinish', Amount = 1, Chance = 5 },
+    { Item = 'pistol50_luxuryfinish', Amount = 1, Chance = 5 },
+    { Item = 'revolver_vipvariant', Amount = 1, Chance = 5 }
+}
+
+local ArtMessages = {
+    Sender = 'Unknown',
+    Subject = 'That THING',
+    Message = "Updated your gps with the location to the house. Get over there and find the box of paintings. There should be a case inside it with the documents. Retrieve it and bring it back to me when it's safe. I've given you a special key that should allow you to unlock the crate lock, but you might need to disable the security device. Godspeed."
+}
+
+local ArtJob = {
+    JobName = 'art',
+    Boss = ArtBoss,
+    Guards = ArtGuards,
+    GuardPositions = ArtGuardPositions,
+    Civilians = ArtCivilians,
+    Vehicles = ArtVehicles,
+    Items = ArtItems,
+    MinimumPolice = 0,
+    RunCost = 35000,
+    Payout =  math.random(270000, 300000),
+    SpecialRewards = ArtSpecialRewards,
+    Messages = ArtMessages 
+}
+
 Config.Jobs = {
     MethJob,
     CokeJob,
     WeedJob,
-    ClownJob
+    ClownJob,
+    ArtJob
 }

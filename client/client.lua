@@ -4,7 +4,6 @@ local VehicleCoords = nil
 local CurrentCops = 0
 local currentJobId = nil
 local onRun = false
-local hasPackage = false
 local hasKey = false
 local case = nil
 
@@ -55,6 +54,7 @@ CreateThread(function()
                         icon = "fas fa-circle",
                         label = v.Boss.missionTitle.. ' $'..v.RunCost,
                         canInteract = function()    
+                            if onRun then return false end
                              if v.Boss.available then
                                  if v.Boss.available.from > v.Boss.available.to then
                                      if GetClockHours() >= v.Boss.available.from or GetClockHours() < v.Boss.available.to then return true else return false end
@@ -63,7 +63,6 @@ CreateThread(function()
                                  end
                              end
     
-                            if onRun then return false else return true end
                         end
                     },
                     { 
@@ -71,11 +70,13 @@ CreateThread(function()
                         event = "cw-raidjob:client:reward",
                         icon = "fas fa-circle",
                         label = "Check Product",
-        
+                        jobId = i,
                         canInteract = function()
                             local playerCoords = GetEntityCoords(PlayerPedId())
                             if GetDistanceBetweenCoords(playerCoords,v.Boss.coords) > 3 then return false end
-                            if onRun and hasPackage then return true else return false end 
+                            local itemInPockets = QBCore.Functions.HasItem(v.Items.FetchItemContents)
+                            print(itemInPockets)
+                            if itemInPockets then return true else return false end
                         end
                     },       
                 },
@@ -150,6 +151,7 @@ function Itemtimemsg()
     Citizen.Wait(Config.Jobs[currentJobId].Items.FetchItemTime)
     RemoveBlip(playerCase)
     TriggerServerEvent('cw-raidjob:server:givecaseitems')
+    currentJobId = nil
     QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
 end
 
@@ -267,11 +269,11 @@ function SpawnGuards()
             guardPosition = listOfGuardPositions[random]
             table.remove(listOfGuardPositions,random)
         end
-        local accuracy = 75
+        local accuracy = Config.DefaultValues.accuracy
         if v.accuracy then
             accuracy = v.accuracy
         end
-        local armor = 50
+        local armor =  Config.DefaultValues.armor
         if v.armor then
             armor = v.armor
         end
@@ -370,7 +372,6 @@ local function MinigameSuccess()
         DeleteEntity(case)
         QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
         Itemtimemsg()
-        hasPackage = true
         case = nil
     end
     end, function()
@@ -387,7 +388,6 @@ local function StartMinigame()
     if Config.Jobs[currentJobId].Items.FetchItemMinigame then
         local type = Config.Jobs[currentJobId].Items.FetchItemMinigame.Type
         local variables = Config.Jobs[currentJobId].Items.FetchItemMinigame.Variables
-
         if type == "Circle" then
             exports['ps-ui']:Circle(function(success)
                 if success then
@@ -446,13 +446,14 @@ RegisterNetEvent('cw-raidjob:client:items', function()
             TriggerEvent("qb-dispatch:raidJob")
             StartMinigame()
         else
-            MinigameFailiure()
+            QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
         end
     end, "casekey")
 end)
 
-RegisterNetEvent('cw-raidjob:client:reward', function()
-    local items = Config.Jobs[currentJobId].Items
+RegisterNetEvent('cw-raidjob:client:reward', function(data)
+    local jobId = data.jobId
+    local items = Config.Jobs[jobId].Items
     print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
         if result then
@@ -466,11 +467,10 @@ RegisterNetEvent('cw-raidjob:client:reward', function()
             }, {}, {}, function() -- Done
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                 ClearPedTasks(PlayerPedId())
-                TriggerServerEvent('cw-raidjob:server:rewardpayout')
+                TriggerServerEvent('cw-raidjob:server:rewardpayout', jobId)
 
                 QBCore.Functions.Notify(Lang:t("success.you_got_paid"), 'success')
                 onRun = false
-                hasPackage = false
                 currentJobId = nil
             end, function()
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
