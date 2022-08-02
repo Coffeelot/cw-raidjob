@@ -216,7 +216,7 @@ local ClownBoss = {
     model = 's_m_m_strperf_01',
     missionTitle = "Do you hate clowns too?  to get your hands dirty?",
     animation = 'WORLD_HUMAN_HUMAN_STATUE', -- OPTIONAL https://pastebin.com/6mrYTdQv
-    availableHours = { from = 10 , to = 13 }
+    available = { from = 10 , to = 13 }
 }
 
 local ClownItems = {

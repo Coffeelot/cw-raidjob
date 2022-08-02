@@ -21,6 +21,14 @@ RegisterNetEvent('police:SetCopCount', function(amount)
     CurrentCops = amount
 end)
 
+local function shallowCopy(original)
+	local copy = {}
+	for key, value in pairs(original) do
+		copy[key] = value
+	end
+	return copy
+end
+
 --- Create bosses
 CreateThread(function()
     for i,v in pairs(Config.Jobs) do
@@ -75,7 +83,6 @@ CreateThread(function()
                             local playerCoords = GetEntityCoords(PlayerPedId())
                             if GetDistanceBetweenCoords(playerCoords,v.Boss.coords) > 3 then return false end
                             local itemInPockets = QBCore.Functions.HasItem(v.Items.FetchItemContents)
-                            print(itemInPockets)
                             if itemInPockets then return true else return false end
                         end
                     },       
@@ -214,7 +221,7 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
             end
 
             ClearAreaOfVehicles(VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, 15.0, false, false, false, false, false)
-            transport = CreateVehicle(v.model, VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, 52.0, true, true)   
+            transport = CreateVehicle(v.model, VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, VehicleCoords.w, true, true)   
     end
     end
     SpawnGuards()
@@ -261,7 +268,7 @@ function SpawnGuards()
     SetPedRelationshipGroupHash(ped, 'PLAYER')
     AddRelationshipGroup('npcguards')
     
-    local listOfGuardPositions = Config.Jobs[currentJobId].GuardPositions -- these are used if random positions
+    local listOfGuardPositions = shallowCopy(Config.Jobs[currentJobId].GuardPositions) -- these are used if random positions
     for k, v in pairs(Config.Jobs[currentJobId].Guards) do
         local guardPosition = v.coords
         if guardPosition == nil then
@@ -316,7 +323,7 @@ function SpawnCivilians()
     AddRelationshipGroup('npccivilians')
     
     if Config.Jobs[currentJobId].Civilians then 
-        local listOfCivilianPositions = Config.Jobs[currentJobId].CivilianPositions -- these are used if random positions
+        local listOfCivilianPositions = shallowCopy(Config.Jobs[currentJobId].CivilianPositions) -- these are used if random positions
         for k, v in pairs(Config.Jobs[currentJobId].Civilians) do
             local civPosition = v.coords
             if civPosition == nil then
