@@ -6,6 +6,7 @@ local currentJobId = nil
 local onRun = false
 local hasKey = false
 local case = nil
+local caseBlip = nil
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
@@ -237,13 +238,13 @@ function SpawnCase()
     CreateObject(case)
     FreezeEntityPosition(case, true)
     SetEntityAsMissionEntity(case)
-    case = AddBlipForEntity(case)
-    SetBlipSprite(case, 457)
-    SetBlipColour(case, 2)
-    SetBlipFlashes(case, false)
+    caseBlip = AddBlipForEntity(case)
+    SetBlipSprite(caseBlip, 457)
+    SetBlipColour(caseBlip, 2)
+    SetBlipFlashes(caseBlip, false)
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString('Case')
-    EndTextCommandSetBlipName(case)
+    EndTextCommandSetBlipName(caseBlip)
 end
 
 npcs = {
@@ -387,16 +388,16 @@ local function MinigameSuccess()
     }, {}, {}, function() -- Done
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
         RemoveBlip(case)
+        DeleteEntity(case)
         TriggerServerEvent('cw-raidjob:server:unlock')
 
         local playerPedPos = GetEntityCoords(PlayerPedId(), true)
-        local case = GetClosestObjectOfType(playerPedPos, 10.0, Config.Jobs[currentJobId].Items.FetchItemProp, false, false, false)
         if (IsPedActiveInScenario(PlayerPedId()) == false) then
         SetEntityAsMissionEntity(case, 1, 1)
-        DeleteEntity(case)
         QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
         Itemtimemsg()
         case = nil
+        caseBlip = nil
         onRun = false
     end
     end, function()
@@ -495,6 +496,7 @@ RegisterNetEvent('cw-raidjob:client:reward', function(data)
                 TriggerServerEvent('cw-raidjob:server:rewardpayout', jobId)
 
                 QBCore.Functions.Notify(Lang:t("success.you_got_paid"), 'success')
+                onRun = false
                 currentJobId = nil
             end, function()
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
