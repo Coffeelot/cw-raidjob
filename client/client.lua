@@ -268,13 +268,21 @@ function SpawnGuards()
     SetPedRelationshipGroupHash(ped, 'PLAYER')
     AddRelationshipGroup('npcguards')
     
-    local listOfGuardPositions = shallowCopy(Config.Jobs[currentJobId].GuardPositions) -- these are used if random positions
+    local listOfGuardPositions = nil
+    if Config.Jobs[currentJobId].GuardPositions ~= nil then
+        listOfGuardPositions = shallowCopy(Config.Jobs[currentJobId].GuardPositions) -- these are used if random positions
+    end
+    
     for k, v in pairs(Config.Jobs[currentJobId].Guards) do
         local guardPosition = v.coords
         if guardPosition == nil then
-            local random = math.random(1,#listOfGuardPositions)
-            guardPosition = listOfGuardPositions[random]
-            table.remove(listOfGuardPositions,random)
+            if listOfGuardPositions == nil then
+                print('Someone made an oopsie when making guard positions!')
+            else
+                local random = math.random(1,#listOfGuardPositions)
+                guardPosition = listOfGuardPositions[random]
+                table.remove(listOfGuardPositions,random)
+            end
         end
         local accuracy = Config.DefaultValues.accuracy
         if v.accuracy then
@@ -322,14 +330,23 @@ function SpawnCivilians()
     SetPedRelationshipGroupHash(ped, 'PLAYER')
     AddRelationshipGroup('npccivilians')
     
-    if Config.Jobs[currentJobId].Civilians then 
-        local listOfCivilianPositions = shallowCopy(Config.Jobs[currentJobId].CivilianPositions) -- these are used if random positions
+    if Config.Jobs[currentJobId].Civilians then
+
+        local listOfCivilianPositions = nil
+        if Config.Jobs[currentJobId].CivilianPositions ~= nil then
+            listOfCivilianPositions = shallowCopy(Config.Jobs[currentJobId].CivilianPositions) -- these are used if random positions
+        end
+        
         for k, v in pairs(Config.Jobs[currentJobId].Civilians) do
             local civPosition = v.coords
             if civPosition == nil then
-                local random = math.random(1,#listOfCivilianPositions)
-                civPosition = listOfCivilianPositions[random]
-                table.remove(listOfCivilianPositions,random)
+                if listOfCivilianPositions == nil then
+                    print('Someone made an oopsie when making civilian positions!')
+                else
+                    local random = math.random(1,#listOfCivilianPositions)
+                    civPosition = listOfCivilianPositions[random]
+                    table.remove(listOfCivilianPositions,random)
+                end
             end
             -- print('Civ location: ', civPosition)
             loadModel(v.model)
@@ -380,6 +397,7 @@ local function MinigameSuccess()
         QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
         Itemtimemsg()
         case = nil
+        onRun = false
     end
     end, function()
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
@@ -461,7 +479,7 @@ end)
 RegisterNetEvent('cw-raidjob:client:reward', function(data)
     local jobId = data.jobId
     local items = Config.Jobs[jobId].Items
-    print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
+    -- print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
         if result then
             TriggerEvent('animations:client:EmoteCommandStart', {"suitcase2"})
@@ -477,7 +495,6 @@ RegisterNetEvent('cw-raidjob:client:reward', function(data)
                 TriggerServerEvent('cw-raidjob:server:rewardpayout', jobId)
 
                 QBCore.Functions.Notify(Lang:t("success.you_got_paid"), 'success')
-                onRun = false
                 currentJobId = nil
             end, function()
                 TriggerEvent('animations:client:EmoteCommandStart', {"c"})
