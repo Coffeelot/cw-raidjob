@@ -7,6 +7,7 @@ local onRun = false
 local hasKey = false
 local case = nil
 local caseBlip = nil
+local blipCircle = nil
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
@@ -231,20 +232,41 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
 end)
 
 function SpawnCase()
-    local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
-    case = CreateObject(Config.Jobs[currentJobId].Items.FetchItemProp, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
-    SetNewWaypoint(caseLocation.x, caseLocation.y)
-    SetEntityHeading(case, caseLocation.w)
-    CreateObject(case)
-    FreezeEntityPosition(case, true)
-    SetEntityAsMissionEntity(case)
-    caseBlip = AddBlipForEntity(case)
-    SetBlipSprite(caseBlip, 457)
-    SetBlipColour(caseBlip, 2)
-    SetBlipFlashes(caseBlip, false)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString('Case')
-    EndTextCommandSetBlipName(caseBlip)
+    local FetchItemRandom = Config.Jobs[currentJobId].Items.FetchItemRandom
+    if FetchItemRandom ~= nil then
+        print('has random case location')
+
+        local caseLocation = FetchItemRandom.Locations[math.random(1,#FetchItemRandom.Locations)]
+        case = CreateObject(Config.Jobs[currentJobId].Items.FetchItemProp, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
+        SetEntityHeading(case, caseLocation.w)
+        CreateObject(case)
+        FreezeEntityPosition(case, true)
+        SetEntityAsMissionEntity(case)
+        
+        local circleCenter = FetchItemRandom.CircleCenter
+        blipCircle = AddBlipForRadius(circleCenter.x, circleCenter.y, circleCenter.z , 60.0) -- you can use a higher number for a bigger zone 
+        SetBlipHighDetail(blipCircle, true) 
+        SetBlipColour(blipCircle, 1) 
+        SetBlipAlpha (blipCircle, 128) 
+        SetNewWaypoint(circleCenter.x, circleCenter.y)
+     
+    else
+        print('does NOT have random case location')
+        local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
+        case = CreateObject(Config.Jobs[currentJobId].Items.FetchItemProp, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
+        SetNewWaypoint(caseLocation.x, caseLocation.y)
+        SetEntityHeading(case, caseLocation.w)
+        CreateObject(case)
+        FreezeEntityPosition(case, true)
+        SetEntityAsMissionEntity(case)
+        caseBlip = AddBlipForEntity(case)
+        SetBlipSprite(caseBlip, 457)
+        SetBlipColour(caseBlip, 2)
+        SetBlipFlashes(caseBlip, false)
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentString('Case')
+        EndTextCommandSetBlipName(caseBlip)
+    end
 end
 
 npcs = {
@@ -388,6 +410,9 @@ local function MinigameSuccess()
     }, {}, {}, function() -- Done
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
         RemoveBlip(case)
+        if blipCircle ~= nil then
+            RemoveBlip(blipCircle)
+        end
         DeleteEntity(case)
         TriggerServerEvent('cw-raidjob:server:unlock')
 
@@ -397,6 +422,7 @@ local function MinigameSuccess()
         QBCore.Functions.Notify(Lang:t("success.you_removed_first_security_case"), 'success')
         Itemtimemsg()
         case = nil
+        blipCircle = nil
         caseBlip = nil
         onRun = false
     end

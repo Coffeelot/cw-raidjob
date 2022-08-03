@@ -280,7 +280,7 @@ local ClownJob = {
 
 -- Art job
 local ArtBoss = {
-    coords = vector4(-1107.19, 158.53, 63.04, 40.49),
+    coords = vector4(16.54, 565.47, 177.79, 262.24),
     model = 'a_m_m_golfer_01',
     missionTitle = "Accept art theft job",
     animation = 'WORLD_HUMAN_GOLF_PLAYER', -- OPTIONAL https://pastebin.com/6mrYTdQv
@@ -297,6 +297,24 @@ local ArtItems = {
     FetchItemMinigame = {
         Type = 'Circle',
         Variables = { 2, 10 }
+    },
+    FetchItemRandom = {
+        CircleCenter = vector3(3.63, 528.46, 174.63),
+        Locations = {
+            vector4(10.2, 526.48, 173.63, 96.2),
+            vector4(2.48, 529.84, 173.63, 222.46),
+            vector4(-6.1, 520.83, 173.63, 329.94),
+            vector4(-8.76, 516.18, 173.63, 147.25),
+            vector4(10.78, 529.79, 173.09, 122.99),
+            vector4(10.5, 536.42, 169.62, 111.98),
+            vector4(-5.38, 530.57, 169.62, 12.19),
+            vector4(-9.63, 532.47, 170.08, 213.65),
+            vector4(-1.68, 525.97, 169.63, 276.11),
+            vector4(-1.1, 524.02, 170.32, 294.44),
+            vector4(10.06, 526.79, 169.64, 30.19),
+            vector4(14.24, 533.73, 169.63, 298.7),
+            vector4(24.24, 541.11, 175.03, 32.01)
+        }
     }
 }
 
@@ -353,7 +371,7 @@ local ArtSpecialRewards = {
 local ArtMessages = {
     Sender = 'Unknown',
     Subject = 'That THING',
-    Message = "Updated your gps with the location to the house. Get over there and find the box of paintings. There should be a case inside it with the documents. Retrieve it and bring it back to me when it's safe. I've given you a special key that should allow you to unlock the crate lock, but you might need to disable the security device. Godspeed."
+    Message = "Updated your gps with the location to the house. Get over there and find the box. You're looking for a small wooden crate! There should be a case inside it with the documents. Retrieve it and bring it back to me when it's safe. I've given you a special key that should allow you to unlock the crate lock, but you might need to disable the security device. Godspeed."
 }
 
 local ArtJob = {
