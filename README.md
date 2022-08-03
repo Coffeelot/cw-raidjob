@@ -1,6 +1,6 @@
 # PVE Raid Job 🔫
 
-We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/iplocator/ps-methrun) was such a great template. We decided to generalize it so more jobs with similar structure could be created without any coding. We kept the original job in the config as an example. 
+We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/Project-Sloth/ps-methrun) was such a great template. We decided to generalize it so more jobs with similar structure could be created without any coding. We kept the original job in the config as an example. 
 
 The job is simple:
 You find the mission giver NPC (at the time of day when you are willing to give you the mission). Pay the fee. You'll get an email with info and a GPS marker. Go there, shoot some dudes up and steal the loot. The first security layer is a puzzle, the second is timed. Make sure you DO NOT bring this close to the boss while it's ticking. After the mission-specific timer is over the case will open and you will recieve the item the boss wants. You can turn it in at any time and get the reward.
