@@ -1,5 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject() 
 
+local isLoggedIn = LocalPlayer.state['isLoggedIn']
 local VehicleCoords = nil
 local CurrentCops = 0
 local currentJobId = nil
@@ -8,6 +9,7 @@ local hasKey = false
 local case = nil
 local caseBlip = nil
 local blipCircle = nil
+local playerCase = nil
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
@@ -159,6 +161,7 @@ function Itemtimemsg()
     QBCore.Functions.Notify(Lang:t("success.case_beep"), 'success')
     Citizen.Wait(Config.Jobs[currentJobId].Items.FetchItemTime)
     RemoveBlip(playerCase)
+    QBCore.Functions.Notify(Lang:t("success.case_beep_stop"), 'success')
     TriggerServerEvent('cw-raidjob:server:givecaseitems')
     currentJobId = nil
     QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
@@ -166,6 +169,7 @@ end
 
 function casegps()
     if QBCore.Functions.GetPlayerData().job.name == 'police' then
+        TriggerEvent('cw-boostjob:client:caseTheftCall')
         playerCase = AddBlipForEntity(PlayerPedId())
         SetBlipSprite(playerCase, 161)
         SetBlipScale(playerCase, 1.4)
@@ -536,4 +540,22 @@ end)
 
 RegisterCommand('raid', function (input)
     TriggerEvent('cw-raidjob:client:start', input)
+end)
+
+RegisterNetEvent('cw-boostjob:client:caseTheftCall', function()
+    if not isLoggedIn then return end
+    local PlayerJob = QBCore.Functions.GetPlayerData().job
+    if PlayerJob.name == "police" and PlayerJob.onduty then
+        local bank
+        bank = "Fleeca"
+        PlaySound(-1, "Lose_1st", "GTAO_FM_Events_Soundset", 0, 0, 1)
+        local vehicleCoords = GetEntityCoords(MissionVehicle)
+        local s1, s2 = GetStreetNameAtCoord(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
+        local street1 = GetStreetNameFromHashKey(s1)
+        local street2 = GetStreetNameFromHashKey(s2)
+        local streetLabel = street1
+        if street2 then streetLabel = streetLabel .. " " .. street2 end
+        local plate = GetVehicleNumberPlateText(MissionVehicle)
+        TriggerServerEvent('police:server:policeAlert', "Theft (Tracker active)")
+    end
 end)

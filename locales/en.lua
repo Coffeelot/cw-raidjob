@@ -13,6 +13,7 @@ local Translations = {
         ["you_got_paid"]                        = "You got paid",
         ["send_email_right_now"]                 = "I will send you an e-mail right now!",
         ["case_beep"]                           = "There is something beeping??",
+        ["case_beep_stop"]                           = "The beeping stopped!",
     },
     info = {
         ["talking_to_boss"]             = "Talking to boss..",
@@ -22,12 +23,12 @@ local Translations = {
     mailstart = {
         ["sender"]                      = "Unknown",
         ["subject"]                     = "Vehicle Location",
-        ["message"]                     = "Updated your gps with the location to a vehicle I got a tip about that contains a briefcase. Retrieve whats inside it and bring it back to me. I've given you a special key that would be used to remove the first layer of security on the case.",
+        ["message"]                     = "Updated your gps with the location. Retrieve whats inside the case and bring it back to me. I've given you a special key that would be used to remove the first layer of security on the case.",
     },
     mail = {
         ["sender"]                      = "Unknown",
         ["subject"]                     = "Goods Collection",
-        ["message"]                     = "Looks like you got the goods, the case should unlock automatically 5 minutes after you unlocked the first layer of security on it. Once completed bring back the items to me and get paid.",
+        ["message"]                     = "Looks like you got the goods, there's a tracker on it. When it stops beeping and opens, bring it back to me.",
     },
 }
 
