@@ -1,5 +1,4 @@
 local QBCore = exports['qb-core']:GetCoreObject() 
-local currentJobId = nil
 local Cooldown = false
 
 
@@ -9,10 +8,9 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
 	local Player = QBCore.Functions.GetPlayer(src)
     
 	if Player.PlayerData.money['cash'] >= Config.Jobs[jobId].RunCost then
-        currentJobId = jobId
-		Player.Functions.RemoveMoney('cash', Config.Jobs[currentJobId].RunCost, "Running Costs")
+		Player.Functions.RemoveMoney('cash', Config.Jobs[jobId].RunCost, "Running Costs")
         Player.Functions.AddItem("casekey", 1)
-        print('current job - id:'..currentJobId..' name: '..Config.Jobs[currentJobId].JobName)
+        print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
 		TriggerClientEvent("cw-raidjob:client:runactivate", src)
         TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
@@ -44,10 +42,10 @@ QBCore.Functions.CreateCallback("cw-raidjob:server:coolc",function(source, cb)
     end
 end)
 
-RegisterServerEvent('cw-raidjob:server:unlock', function ()
+RegisterServerEvent('cw-raidjob:server:unlock', function (jobId)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    local items = Config.Jobs[currentJobId].Items
+    local items = Config.Jobs[jobId].Items
 
 	Player.Functions.AddItem(items.FetchItem, 1)
     Player.Functions.RemoveItem("casekey", 1)
@@ -75,14 +73,13 @@ RegisterServerEvent('cw-raidjob:server:rewardpayout', function (jobId)
     end
 end)
 
-RegisterServerEvent('cw-raidjob:server:givecaseitems', function ()
+RegisterServerEvent('cw-raidjob:server:givecaseitems', function (jobId)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    local items = Config.Jobs[currentJobId].Items
+    local items = Config.Jobs[jobId].Items
 
 	Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
     Player.Functions.RemoveItem(items.FetchItem, 1)
 	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "add")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
-    currentJobId = nil;
 end)

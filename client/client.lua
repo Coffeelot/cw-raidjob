@@ -123,6 +123,8 @@ end)
 
 ---Phone msgs
 function RunStart()
+    onRun = true
+    hasKey = true
 	Citizen.Wait(2000)
 
     local sender = Lang:t('mailstart.sender')
@@ -162,7 +164,7 @@ function Itemtimemsg()
     Citizen.Wait(Config.Jobs[currentJobId].Items.FetchItemTime)
     RemoveBlip(playerCase)
     QBCore.Functions.Notify(Lang:t("success.case_beep_stop"), 'success')
-    TriggerServerEvent('cw-raidjob:server:givecaseitems')
+    TriggerServerEvent('cw-raidjob:server:givecaseitems', currentJobId)
     currentJobId = nil
     QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
 end
@@ -195,8 +197,6 @@ RegisterNetEvent('cw-raidjob:client:start', function (data)
                 }, {}, {}, function() -- Done
                     TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                     TriggerServerEvent('cw-raidjob:server:startr', currentJobId)
-                    onRun = true
-                    hasKey = true
                 end, function() -- Cancel
                     TriggerEvent('animations:client:EmoteCommandStart', {"c"})
                     QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
@@ -209,6 +209,139 @@ RegisterNetEvent('cw-raidjob:client:start', function (data)
         QBCore.Functions.Notify(Lang:t("error.cannot_do_this_right_now"), 'error')
     end
 end)
+
+local npcs = {
+    ['npcguards'] = {},
+    ['npccivilians'] = {}
+}
+
+
+function loadModel(model)
+    if type(model) ~= 'number' then
+        model = GetHashKey(model)
+    end
+
+    while not HasModelLoaded(model) do
+        RequestModel(model)
+        Citizen.Wait(0)
+    end
+end
+
+local function SpawnGuards()
+    local ped = PlayerPedId()
+    SetPedRelationshipGroupHash(ped, 'PLAYER')
+    AddRelationshipGroup('npcguards')
+    
+    local listOfGuardPositions = nil
+    if Config.Jobs[currentJobId].GuardPositions ~= nil then
+        listOfGuardPositions = shallowCopy(Config.Jobs[currentJobId].GuardPositions) -- these are used if random positions
+    end
+    
+    for k, v in pairs(Config.Jobs[currentJobId].Guards) do
+        local guardPosition = v.coords
+        if guardPosition == nil then
+            if listOfGuardPositions == nil then
+                print('Someone made an oopsie when making guard positions!')
+            else
+                local random = math.random(1,#listOfGuardPositions)
+                guardPosition = listOfGuardPositions[random]
+                table.remove(listOfGuardPositions,random)
+            end
+        end
+        local accuracy = Config.DefaultValues.accuracy
+        if v.accuracy then
+            accuracy = v.accuracy
+        end
+        local armor =  Config.DefaultValues.armor
+        if v.armor then
+            armor = v.armor
+        end
+        -- print('Guard location: ', guardPosition)
+        loadModel(v.model)
+        npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
+        NetworkRegisterEntityAsNetworked(npcs['npcguards'][k])
+        local networkID = NetworkGetNetworkIdFromEntity(npcs['npcguards'][k])
+        print('netid', networkID)
+        SetNetworkIdCanMigrate(networkID, true)
+        SetNetworkIdExistsOnAllMachines(networkID, true)
+        SetPedRandomComponentVariation(npcs['npcguards'][k], 0)
+        SetPedRandomProps(npcs['npcguards'][k])
+        SetEntityAsMissionEntity(npcs['npcguards'][k])
+        SetEntityVisible(npcs['npcguards'][k], true)
+        SetPedRelationshipGroupHash(npcs['npcguards'][k], 'npcguards')
+        SetPedAccuracy(npcs['npcguards'][k], accuracy)
+        SetPedArmour(npcs['npcguards'][k], armor)
+        SetPedCanSwitchWeapon(npcs['npcguards'][k], true)
+        SetPedDropsWeaponsWhenDead(npcs['npcguards'][k], false)
+        SetPedFleeAttributes(npcs['npcguards'][k], 0, false)
+        local weapon = 'WEAPON_PISTOL'
+        if v.weapon then
+            weapon = v.weapon
+        end
+        GiveWeaponToPed(npcs['npcguards'][k], v.weapon, 255, false, false)
+        local random = math.random(1, 2)
+        if random == 2 then
+            TaskGuardCurrentPosition(npcs['npcguards'][k], 10.0, 10.0, 1)
+        end
+        Wait(1000) -- cheap way to fix npcs not spawning
+    end
+
+    SetRelationshipBetweenGroups(0, 'npcguards', 'npcguards')
+    SetRelationshipBetweenGroups(5, 'npcguards', 'PLAYER')
+    SetRelationshipBetweenGroups(5, 'PLAYER', 'npcguards')
+end
+
+local function SpawnCivilians()
+    local ped = PlayerPedId()
+    SetPedRelationshipGroupHash(ped, 'PLAYER')
+    AddRelationshipGroup('npccivilians')
+    
+    if Config.Jobs[currentJobId].Civilians then
+
+        local listOfCivilianPositions = nil
+        if Config.Jobs[currentJobId].CivilianPositions ~= nil then
+            listOfCivilianPositions = shallowCopy(Config.Jobs[currentJobId].CivilianPositions) -- these are used if random positions
+        end
+        
+        for k, v in pairs(Config.Jobs[currentJobId].Civilians) do
+            local civPosition = v.coords
+            if civPosition == nil then
+                if listOfCivilianPositions == nil then
+                    print('Someone made an oopsie when making civilian positions!')
+                else
+                    local random = math.random(1,#listOfCivilianPositions)
+                    civPosition = listOfCivilianPositions[random]
+                    table.remove(listOfCivilianPositions,random)
+                end
+            end
+            -- print('Civ location: ', civPosition)
+            loadModel(v.model)
+            npcs['npccivilians'][k] = CreatePed(26, GetHashKey(v.model), civPosition, true, true)
+            NetworkRegisterEntityAsNetworked(npcs['npccivilians'][k])
+            local networkID = NetworkGetNetworkIdFromEntity(npcs['npccivilians'][k])
+            SetNetworkIdCanMigrate(networkID, true)
+            SetNetworkIdExistsOnAllMachines(networkID, true)
+            SetPedRandomComponentVariation(npcs['npccivilians'][k], 0)
+            SetPedRandomProps(npcs['npccivilians'][k])
+            SetEntityAsMissionEntity(npcs['npccivilians'][k])
+            SetEntityVisible(npcs['npccivilians'][k], true)
+            SetPedRelationshipGroupHash(npcs['npccivilians'][k], 'npccivilians')
+            SetPedArmour(npcs['npccivilians'][k], 10)
+            SetPedFleeAttributes(npcs['npccivilians'][k], 0, true)
+
+            local animation = "CODE_HUMAN_COWER"
+            if v.animation then
+                animation = v.animation
+            end
+            TaskStartScenarioInPlace(npcs['npccivilians'][k],  animation, 0, true)
+            Wait(1000) -- cheap way to fix npcs not spawning
+        end
+
+        SetRelationshipBetweenGroups(3, 'npccivilians', 'npccivilians')
+        SetRelationshipBetweenGroups(3, 'npccivilians', 'PLAYER')
+        SetRelationshipBetweenGroups(3, 'PLAYER', 'npccivilians')
+    end
+end
 
 RegisterNetEvent('cw-raidjob:client:runactivate', function()
     RunStart()
@@ -273,136 +406,6 @@ function SpawnCase()
     end
 end
 
-npcs = {
-    ['npcguards'] = {},
-    ['npccivilians'] = {}
-}
-
-
-function loadModel(model)
-    if type(model) ~= 'number' then
-        model = GetHashKey(model)
-    end
-
-    while not HasModelLoaded(model) do
-        RequestModel(model)
-        Citizen.Wait(0)
-    end
-end
-
-function SpawnGuards()
-    local ped = PlayerPedId()
-    SetPedRelationshipGroupHash(ped, 'PLAYER')
-    AddRelationshipGroup('npcguards')
-    
-    local listOfGuardPositions = nil
-    if Config.Jobs[currentJobId].GuardPositions ~= nil then
-        listOfGuardPositions = shallowCopy(Config.Jobs[currentJobId].GuardPositions) -- these are used if random positions
-    end
-    
-    for k, v in pairs(Config.Jobs[currentJobId].Guards) do
-        local guardPosition = v.coords
-        if guardPosition == nil then
-            if listOfGuardPositions == nil then
-                print('Someone made an oopsie when making guard positions!')
-            else
-                local random = math.random(1,#listOfGuardPositions)
-                guardPosition = listOfGuardPositions[random]
-                table.remove(listOfGuardPositions,random)
-            end
-        end
-        local accuracy = Config.DefaultValues.accuracy
-        if v.accuracy then
-            accuracy = v.accuracy
-        end
-        local armor =  Config.DefaultValues.armor
-        if v.armor then
-            armor = v.armor
-        end
-        -- print('Guard location: ', guardPosition)
-        loadModel(v.model)
-        npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
-        NetworkRegisterEntityAsNetworked(npcs['npcguards'][k])
-        local networkID = NetworkGetNetworkIdFromEntity(npcs['npcguards'][k])
-        SetNetworkIdCanMigrate(networkID, true)
-        SetNetworkIdExistsOnAllMachines(networkID, true)
-        SetPedRandomComponentVariation(npcs['npcguards'][k], 0)
-        SetPedRandomProps(npcs['npcguards'][k])
-        SetEntityAsMissionEntity(npcs['npcguards'][k])
-        SetEntityVisible(npcs['npcguards'][k], true)
-        SetPedRelationshipGroupHash(npcs['npcguards'][k], 'npcguards')
-        SetPedAccuracy(npcs['npcguards'][k], accuracy)
-        SetPedArmour(npcs['npcguards'][k], armor)
-        SetPedCanSwitchWeapon(npcs['npcguards'][k], true)
-        SetPedDropsWeaponsWhenDead(npcs['npcguards'][k], false)
-        SetPedFleeAttributes(npcs['npcguards'][k], 0, false)
-        local weapon = 'WEAPON_PISTOL'
-        if v.weapon then
-            weapon = v.weapon
-        end
-        GiveWeaponToPed(npcs['npcguards'][k], v.weapon, 255, false, false)
-        local random = math.random(1, 2)
-        if random == 2 then
-            TaskGuardCurrentPosition(npcs['npcguards'][k], 10.0, 10.0, 1)
-        end
-    end
-
-    SetRelationshipBetweenGroups(0, 'npcguards', 'npcguards')
-    SetRelationshipBetweenGroups(5, 'npcguards', 'PLAYER')
-    SetRelationshipBetweenGroups(5, 'PLAYER', 'npcguards')
-end
-
-function SpawnCivilians()
-    local ped = PlayerPedId()
-    SetPedRelationshipGroupHash(ped, 'PLAYER')
-    AddRelationshipGroup('npccivilians')
-    
-    if Config.Jobs[currentJobId].Civilians then
-
-        local listOfCivilianPositions = nil
-        if Config.Jobs[currentJobId].CivilianPositions ~= nil then
-            listOfCivilianPositions = shallowCopy(Config.Jobs[currentJobId].CivilianPositions) -- these are used if random positions
-        end
-        
-        for k, v in pairs(Config.Jobs[currentJobId].Civilians) do
-            local civPosition = v.coords
-            if civPosition == nil then
-                if listOfCivilianPositions == nil then
-                    print('Someone made an oopsie when making civilian positions!')
-                else
-                    local random = math.random(1,#listOfCivilianPositions)
-                    civPosition = listOfCivilianPositions[random]
-                    table.remove(listOfCivilianPositions,random)
-                end
-            end
-            -- print('Civ location: ', civPosition)
-            loadModel(v.model)
-            npcs['npccivilians'][k] = CreatePed(26, GetHashKey(v.model), civPosition, true, true)
-            NetworkRegisterEntityAsNetworked(npcs['npccivilians'][k])
-            local networkID = NetworkGetNetworkIdFromEntity(npcs['npccivilians'][k])
-            SetNetworkIdCanMigrate(networkID, true)
-            SetNetworkIdExistsOnAllMachines(networkID, true)
-            SetPedRandomComponentVariation(npcs['npccivilians'][k], 0)
-            SetPedRandomProps(npcs['npccivilians'][k])
-            SetEntityAsMissionEntity(npcs['npccivilians'][k])
-            SetEntityVisible(npcs['npccivilians'][k], true)
-            SetPedRelationshipGroupHash(npcs['npccivilians'][k], 'npccivilians')
-            SetPedArmour(npcs['npccivilians'][k], 10)
-            SetPedFleeAttributes(npcs['npccivilians'][k], 0, true)
-
-            local animation = "CODE_HUMAN_COWER"
-            if v.animation then
-                animation = v.animation
-            end
-            TaskStartScenarioInPlace(npcs['npccivilians'][k],  animation, 0, true)
-        end
-
-        SetRelationshipBetweenGroups(3, 'npccivilians', 'npccivilians')
-        SetRelationshipBetweenGroups(3, 'npccivilians', 'PLAYER')
-        SetRelationshipBetweenGroups(3, 'PLAYER', 'npccivilians')
-    end
-end
-
 local function MinigameSuccess()
     TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
     QBCore.Functions.Progressbar("grab_case", "Unlocking case", 10000, false, true, {
@@ -418,7 +421,7 @@ local function MinigameSuccess()
             RemoveBlip(blipCircle)
         end
         DeleteEntity(case)
-        TriggerServerEvent('cw-raidjob:server:unlock')
+        TriggerServerEvent('cw-raidjob:server:unlock', currentJobId)
 
         local playerPedPos = GetEntityCoords(PlayerPedId(), true)
         if (IsPedActiveInScenario(PlayerPedId()) == false) then

@@ -41,7 +41,7 @@ local MethGuards = {
 }
 
 local MethVehicles = {
-    { coords = vector3(3814.76, 4461.75, 3.6), model = 'slamvan2'}
+    { coords = vector4(3814.76, 4461.75, 3.6, 230), model = 'slamvan2'}
 }
 
 local MethSpecialRewards = {
@@ -280,7 +280,7 @@ local ClownJob = {
 
 -- Art job
 local ArtBoss = {
-    coords = vector4(16.54, 565.47, 177.79, 262.24),
+    coords = vector4(-1108.53, 156.21, 63.04, 70.21),
     model = 'a_m_m_golfer_01',
     missionTitle = "Accept art theft job",
     animation = 'WORLD_HUMAN_GOLF_PLAYER', -- OPTIONAL https://pastebin.com/6mrYTdQv
@@ -291,7 +291,7 @@ local ArtItems = {
     FetchItemLocation = vector4(8.4, 529.35, 169.64, 53.86),
     FetchItemTime = 180000, -- time it takes for the item to activate
     FetchItem = 'securityCase', -- item (inventory)
-    FetchItemProp = 'ex_prop_crate_art_bc', -- item (world object)
+    FetchItemProp = 'ex_prop_adv_case_sm_03', -- item (world object)
     FetchItemContents = 'art_notes', -- item that drops from FetchItem after FetchItemTime is over
     FetchItemContentsAmount = 1, -- Amount of FetchItemContent items
     FetchItemMinigame = {
@@ -356,7 +356,7 @@ local ArtGuards = {
 }
 
 local ArtVehicles = {
-    { coords = vector4(13.72, 547.47, 176.08, 78.14), model = 'adder'}
+    { coords = vector4(13.72, 547.47, 176.08, 78.14), model = 'nero'}
 }
 
 local ArtSpecialRewards = {
