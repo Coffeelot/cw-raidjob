@@ -1,5 +1,6 @@
 Config = {}
 
+Config.UseTokens = false -- false = use price, true = use cw-tokens
 Config.Cooldown = 1 --- Cooldown until next allowed meth run
 Config.DefaultValues = {
     armor = 10,
@@ -52,6 +53,7 @@ local MethSpecialRewards = {
 local MethJobPayout = math.random(150000, 220000)
 local MethJob = {
     JobName = 'meth',
+    Token = 'raidmeth',
     Boss = MethBoss,
     Guards = MethGuards,
     Vehicles = MethVehicles,
@@ -147,6 +149,7 @@ local CokeMessages = {
 
 local CokeJob = {
     JobName = 'coke',
+    Token = 'raidcocaine',
     Boss = CokeBoss,
     Guards = CokeGuards,
     GuardPositions = CokeGuardPositions,
@@ -200,6 +203,7 @@ local WeedSpecialRewards = {
 
 local WeedJob = {
     JobName = 'weed',
+    Token = 'raidweed',
     Boss = WeedBoss,
     Guards = WeedGuards,
     Vehicles = WeedVehicles,
@@ -266,6 +270,7 @@ local ClownMessages = {
 
 local ClownJob = {
     JobName = 'clown',
+    Token = 'raidclown',
     Boss = ClownBoss,
     Guards = ClownGuards,
     GuardPositions = ClownGuardPositions,
@@ -376,6 +381,7 @@ local ArtMessages = {
 
 local ArtJob = {
     JobName = 'art',
+    Token = 'raidart',
     Boss = ArtBoss,
     Guards = ArtGuards,
     GuardPositions = ArtGuardPositions,

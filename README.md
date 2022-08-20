@@ -13,6 +13,9 @@ You find the mission giver NPC (at the time of day when you are willing to give 
 
 [![YOUTUBE VIDEO](http://img.youtube.com/vi/QXkydMqS_ok/0.jpg)](https://youtu.be/QXkydMqS_ok)
 
+# Tokens 🔑
+
+At the top of the Config you will find `Config.UseTokens = false`. Change `false` to `true` if you want to use [cw-tokens](https://github.com/Coffeelot/cw-tokens).
 # Job Creation 🔧
 All you need to do to add more jobs is to add new Job objects (with all the required things) in the config.lua file. We included several examples showcasing a variety of functionality. Don't forget to add the job object into the *Config.Jobs* object at the bottom of the file! 
 ## Job object (see CokeJob for example)

@@ -33,6 +33,15 @@ local function shallowCopy(original)
 	return copy
 end
 
+local function canInteract(value)
+    local tokens = nil
+    QBCore.Functions.TriggerCallback('cw-tokens:server:PlayerHasToken', function(result, value)
+        tokens = result
+    end)
+    Wait(100)
+    if tokens ~=nil and tokens[value] then return true else return false end
+end
+
 --- Create bosses
 CreateThread(function()
     for i,v in pairs(Config.Jobs) do
@@ -49,6 +58,12 @@ CreateThread(function()
             Wait(1)
         end
 
+        local title = v.Boss.missionTitle
+        if Config.UseTokens then
+            title = title.. ' using token'
+        else
+            title = title.. ' $'..v.RunCost
+        end
         exports['qb-target']:SpawnPed({
             model = boss.model,
             coords = boss.coords,
@@ -64,9 +79,14 @@ CreateThread(function()
                         event = "cw-raidjob:client:start",
                         jobId = i,
                         icon = "fas fa-circle",
-                        label = v.Boss.missionTitle.. ' $'..v.RunCost,
+                        label = title,
                         canInteract = function()    
                             if onRun then return false end
+                            if Config.UseTokens then
+                                if v.Token then
+                                    return canInteract(v.Token)
+                                end
+                            end
                              if v.Boss.available then
                                  if v.Boss.available.from > v.Boss.available.to then
                                      if GetClockHours() >= v.Boss.available.from or GetClockHours() < v.Boss.available.to then return true else return false end
@@ -74,7 +94,6 @@ CreateThread(function()
                                      if GetClockHours() >= v.Boss.available.from and GetClockHours() < v.Boss.available.to then return true else return false end
                                  end
                              end
-    
                         end
                     },
                     { 

@@ -7,17 +7,28 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
     
-	if Player.PlayerData.money['cash'] >= Config.Jobs[jobId].RunCost then
-		Player.Functions.RemoveMoney('cash', Config.Jobs[jobId].RunCost, "Running Costs")
+    
+    if Config.UseTokens and Config.Jobs[jobId].Token then
+        TriggerEvent('cw-tokens:server:TakeToken', src, Config.Jobs[jobId].Token)
         Player.Functions.AddItem("casekey", 1)
-        print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName)
+        print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName.. ' | using Tokens')
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
-		TriggerClientEvent("cw-raidjob:client:runactivate", src)
+        TriggerClientEvent("cw-raidjob:client:runactivate", src)
         TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
         TriggerEvent('cw-raidjob:server:coolout')
-	else
-		TriggerClientEvent('QBCore:Notify', source, Lang:t("error.you_dont_have_enough_money"), 'error')
-	end
+    else
+        if Player.PlayerData.money['cash'] >= Config.Jobs[jobId].RunCost then
+            Player.Functions.RemoveMoney('cash', Config.Jobs[jobId].RunCost, "Running Costs")
+            Player.Functions.AddItem("casekey", 1)
+            print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName)
+            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
+            TriggerClientEvent("cw-raidjob:client:runactivate", src)
+            TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
+            TriggerEvent('cw-raidjob:server:coolout')
+        else
+            TriggerClientEvent('QBCore:Notify', source, Lang:t("error.you_dont_have_enough_money"), 'error')
+        end
+    end
 end)
 
 -- cool down for job
