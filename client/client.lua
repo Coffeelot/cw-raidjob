@@ -121,8 +121,29 @@ CreateThread(function()
 
 end)
 
+CreateThread(function()
+    if onRun and case ~= nil then
+        exports['qb-target']:AddTargetModel(case, {
+            options = {
+                {
+                    type = 'client',
+                    event = "cw-raidjob:client:items",
+                    icon = "fas fa-circle",
+                    label = "Grab Goods",
+    
+                    canInteract = function()
+                        if onRun and hasKey then return true else return false end 
+                    end
+                },
+            },
+            distance = 2.5
+        })
+    end
+
+end)
+
 ---Phone msgs
-function RunStart()
+local function RunStart()
     onRun = true
     hasKey = true
 	Citizen.Wait(2000)
@@ -151,7 +172,19 @@ function RunStart()
 	Citizen.Wait(3000)
 end
 
-function Itemtimemsg()
+local function casegps()
+    if QBCore.Functions.GetPlayerData().job.name == 'police' then
+        TriggerEvent('cw-boostjob:client:caseTheftCall')
+        playerCase = AddBlipForEntity(PlayerPedId())
+        SetBlipSprite(playerCase, 161)
+        SetBlipScale(playerCase, 1.4)
+        PulseBlip(playerCase)
+        SetBlipColour(playerCase, 2)
+        SetBlipAsShortRange(playerCase, true)
+    end
+end
+
+local function Itemtimemsg()
     Citizen.Wait(2000)
 
 	TriggerServerEvent('qb-phone:server:sendNewMail', {
@@ -169,17 +202,6 @@ function Itemtimemsg()
     QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
 end
 
-function casegps()
-    if QBCore.Functions.GetPlayerData().job.name == 'police' then
-        TriggerEvent('cw-boostjob:client:caseTheftCall')
-        playerCase = AddBlipForEntity(PlayerPedId())
-        SetBlipSprite(playerCase, 161)
-        SetBlipScale(playerCase, 1.4)
-        PulseBlip(playerCase)
-        SetBlipColour(playerCase, 2)
-        SetBlipAsShortRange(playerCase, true)
-    end
-end
 
 ---
 RegisterNetEvent('cw-raidjob:client:start', function (data)
@@ -216,7 +238,7 @@ local npcs = {
 }
 
 
-function loadModel(model)
+local function loadModel(model)
     if type(model) ~= 'number' then
         model = GetHashKey(model)
     end
@@ -343,6 +365,50 @@ local function SpawnCivilians()
     end
 end
 
+local function SpawnCase()
+    local FetchItemRandom = Config.Jobs[currentJobId].Items.FetchItemRandom
+
+    local prop = 'prop_security_case_01'
+    if Config.Jobs[currentJobId].Items.FetchItemProp then
+        prop = Config.Jobs[currentJobId].Items.FetchItemProp
+    end
+
+    if FetchItemRandom ~= nil then
+        print('has random case location')
+
+        local caseLocation = FetchItemRandom.Locations[math.random(1,#FetchItemRandom.Locations)]
+        case = CreateObject(prop, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
+        SetEntityHeading(case, caseLocation.w)
+        CreateObject(case)
+        FreezeEntityPosition(case, true)
+        SetEntityAsMissionEntity(case)
+        
+        local circleCenter = FetchItemRandom.CircleCenter
+        blipCircle = AddBlipForRadius(circleCenter.x, circleCenter.y, circleCenter.z , 60.0) -- you can use a higher number for a bigger zone 
+        SetBlipHighDetail(blipCircle, true) 
+        SetBlipColour(blipCircle, 1) 
+        SetBlipAlpha (blipCircle, 128) 
+        SetNewWaypoint(circleCenter.x, circleCenter.y)
+     
+    else
+        print('does NOT have random case location')
+        local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
+        case = CreateObject(prop, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
+        SetNewWaypoint(caseLocation.x, caseLocation.y)
+        SetEntityHeading(case, caseLocation.w)
+        CreateObject(case)
+        FreezeEntityPosition(case, true)
+        SetEntityAsMissionEntity(case)
+        caseBlip = AddBlipForEntity(case)
+        SetBlipSprite(caseBlip, 457)
+        SetBlipColour(caseBlip, 2)
+        SetBlipFlashes(caseBlip, false)
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentString('Case')
+        EndTextCommandSetBlipName(caseBlip)
+    end
+end
+
 RegisterNetEvent('cw-raidjob:client:runactivate', function()
     RunStart()
     Citizen.Wait(4)
@@ -368,43 +434,7 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
     SpawnCase()
 end)
 
-function SpawnCase()
-    local FetchItemRandom = Config.Jobs[currentJobId].Items.FetchItemRandom
-    if FetchItemRandom ~= nil then
-        print('has random case location')
 
-        local caseLocation = FetchItemRandom.Locations[math.random(1,#FetchItemRandom.Locations)]
-        case = CreateObject(Config.Jobs[currentJobId].Items.FetchItemProp, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
-        SetEntityHeading(case, caseLocation.w)
-        CreateObject(case)
-        FreezeEntityPosition(case, true)
-        SetEntityAsMissionEntity(case)
-        
-        local circleCenter = FetchItemRandom.CircleCenter
-        blipCircle = AddBlipForRadius(circleCenter.x, circleCenter.y, circleCenter.z , 60.0) -- you can use a higher number for a bigger zone 
-        SetBlipHighDetail(blipCircle, true) 
-        SetBlipColour(blipCircle, 1) 
-        SetBlipAlpha (blipCircle, 128) 
-        SetNewWaypoint(circleCenter.x, circleCenter.y)
-     
-    else
-        print('does NOT have random case location')
-        local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
-        case = CreateObject(Config.Jobs[currentJobId].Items.FetchItemProp, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
-        SetNewWaypoint(caseLocation.x, caseLocation.y)
-        SetEntityHeading(case, caseLocation.w)
-        CreateObject(case)
-        FreezeEntityPosition(case, true)
-        SetEntityAsMissionEntity(case)
-        caseBlip = AddBlipForEntity(case)
-        SetBlipSprite(caseBlip, 457)
-        SetBlipColour(caseBlip, 2)
-        SetBlipFlashes(caseBlip, false)
-        BeginTextCommandSetBlipName("STRING")
-        AddTextComponentString('Case')
-        EndTextCommandSetBlipName(caseBlip)
-    end
-end
 
 local function MinigameSuccess()
     TriggerEvent('animations:client:EmoteCommandStart', {"type3"})
