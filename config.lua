@@ -270,7 +270,6 @@ local ClownMessages = {
 
 local ClownJob = {
     JobName = 'clown',
-    Token = 'raidclown',
     Boss = ClownBoss,
     Guards = ClownGuards,
     GuardPositions = ClownGuardPositions,
