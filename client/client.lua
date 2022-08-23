@@ -45,7 +45,9 @@ end
 --- Create bosses
 CreateThread(function()
     for i,v in pairs(Config.Jobs) do
-        -- print('creating data for job: '..v.JobName.. ' with id: '..i.. ' with boss: '.. v.Boss.model)
+        if Config.Debug then
+            print('creating data for job: '..v.JobName.. ' with id: '..i.. ' with boss: '.. v.Boss.model)
+        end
         local boss = v.Boss
         local animation
         if boss.animation then
@@ -114,59 +116,40 @@ CreateThread(function()
             },
             spawnNow = true,
         })
+    end
 
-        local prop = 'prop_security_case_01'
-        if v.Items.FetchItemProp then
-            prop = v.Items.FetchItemProp
+end)
+
+local function CreateCaseInteraction()
+    CreateThread(function()
+        if onRun and case ~= nil then
+            exports['qb-target']:AddTargetEntity(case, {
+                options = {
+                    {
+                        type = 'client',
+                        event = "cw-raidjob:client:items",
+                        icon = "fas fa-circle",
+                        label = "Grab Goods",
+        
+                        canInteract = function()
+                            if onRun and hasKey then return true else return false end 
+                        end
+                    },
+                },
+                distance = 2.5
+            })
         end
-            ---
-        exports['qb-target']:AddTargetModel(prop, {
-            options = {
-                {
-                    type = 'client',
-                    event = "cw-raidjob:client:items",
-                    icon = "fas fa-circle",
-                    label = "Grab Goods",
-    
-                    canInteract = function()
-                        if onRun and hasKey then return true else return false end 
-                    end
-                },
-            },
-            distance = 2.5
-        })
 
-    end
-
-end)
-
-CreateThread(function()
-    if onRun and case ~= nil then
-        exports['qb-target']:AddTargetModel(case, {
-            options = {
-                {
-                    type = 'client',
-                    event = "cw-raidjob:client:items",
-                    icon = "fas fa-circle",
-                    label = "Grab Goods",
-    
-                    canInteract = function()
-                        if onRun and hasKey then return true else return false end 
-                    end
-                },
-            },
-            distance = 2.5
-        })
-    end
-
-end)
-
----Phone msgs
+    end)
+end
 local function RunStart()
     onRun = true
     hasKey = true
 	Citizen.Wait(2000)
+end
 
+---Phone msgs
+local function FirstMessages()
     local sender = Lang:t('mailstart.sender')
     local subject = Lang:t('mailstart.subject')
     local message = Lang:t('mailstart.message')
@@ -188,8 +171,8 @@ local function RunStart()
         subject = subject,
         message = message,
 	})
-	Citizen.Wait(3000)
 end
+
 
 local function casegps()
     if QBCore.Functions.GetPlayerData().job.name == 'police' then
@@ -302,7 +285,9 @@ local function SpawnGuards()
         npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
         NetworkRegisterEntityAsNetworked(npcs['npcguards'][k])
         local networkID = NetworkGetNetworkIdFromEntity(npcs['npcguards'][k])
-        print('netid', networkID)
+        if Config.Debug then
+            print('networkid: ', networkID)
+        end
         SetNetworkIdCanMigrate(networkID, true)
         SetNetworkIdExistsOnAllMachines(networkID, true)
         SetPedRandomComponentVariation(npcs['npcguards'][k], 0)
@@ -393,8 +378,9 @@ local function SpawnCase()
     end
 
     if FetchItemRandom ~= nil then
-        print('has random case location')
-
+        if Config.Debug then
+            print('has random case location')
+        end
         local caseLocation = FetchItemRandom.Locations[math.random(1,#FetchItemRandom.Locations)]
         case = CreateObject(prop, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
         SetEntityHeading(case, caseLocation.w)
@@ -410,7 +396,9 @@ local function SpawnCase()
         SetNewWaypoint(circleCenter.x, circleCenter.y)
      
     else
-        print('does NOT have random case location')
+        if Config.Debug then
+            print('does NOT have random case location')
+        end
         local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
         case = CreateObject(prop, caseLocation.x, caseLocation.y, caseLocation.z, true,  true, true)
         SetNewWaypoint(caseLocation.x, caseLocation.y)
@@ -426,6 +414,7 @@ local function SpawnCase()
         AddTextComponentString('Case')
         EndTextCommandSetBlipName(caseBlip)
     end
+    CreateCaseInteraction()
 end
 
 RegisterNetEvent('cw-raidjob:client:runactivate', function()
@@ -451,6 +440,7 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
     SpawnGuards()
     SpawnCivilians()
     SpawnCase()
+    FirstMessages()
 end)
 
 
@@ -562,7 +552,9 @@ end)
 RegisterNetEvent('cw-raidjob:client:reward', function(data)
     local jobId = data.jobId
     local items = Config.Jobs[jobId].Items
-    -- print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
+    if Config.Debug then
+        print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
+    end
     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
         if result then
             TriggerEvent('animations:client:EmoteCommandStart', {"suitcase2"})

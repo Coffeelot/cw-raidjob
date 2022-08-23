@@ -1,4 +1,5 @@
 Config = {}
+Config.Debug = false
 
 Config.UseTokens = false -- false = use price, true = use cw-tokens
 Config.Cooldown = 1 --- Cooldown until next allowed meth run
@@ -309,7 +310,7 @@ local ArtItems = {
             vector4(2.48, 529.84, 173.63, 222.46),
             vector4(-6.1, 520.83, 173.63, 329.94),
             vector4(-8.76, 516.18, 173.63, 147.25),
-            vector4(10.78, 529.79, 173.09, 122.99),
+            vector4(10.78, 529.79, 174.09, 122.99),
             vector4(10.5, 536.42, 169.62, 111.98),
             vector4(-5.38, 530.57, 169.62, 12.19),
             vector4(-9.63, 532.47, 170.08, 213.65),
