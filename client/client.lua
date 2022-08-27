@@ -372,7 +372,7 @@ end
 local function SpawnCase()
     local FetchItemRandom = Config.Jobs[currentJobId].Items.FetchItemRandom
 
-    local prop = 'prop_security_case_01'
+    local prop = 'hei_prop_hei_security_case'
     if Config.Jobs[currentJobId].Items.FetchItemProp then
         prop = Config.Jobs[currentJobId].Items.FetchItemProp
     end
