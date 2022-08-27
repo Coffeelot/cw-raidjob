@@ -6,8 +6,15 @@ The job is simple:
 You find the mission giver NPC (at the time of day when you are willing to give you the mission). Pay the fee. You'll get an email with info and a GPS marker. Go there, shoot some dudes up and steal the loot. The first security layer is a puzzle, the second is timed. Make sure you DO NOT bring this close to the boss while it's ticking. After the mission-specific timer is over the case will open and you will recieve the item the boss wants. You can turn it in at any time and get the reward.
 
 # Developed by Coffeelot and Wuggie
-[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈\
-[Support, updates and script previews](https://discord.gg/FJY4mtjaKr) 👈
+[More scripts by us](https://github.com/stars/Coffeelot/lists/cw-scripts)  👈
+
+**Support, updates and script previews**:
+
+[![Join The discord!](https://cdn.discordapp.com/attachments/977876510620909579/1013102122985857064/discordJoin.png)](https://discord.gg/FJY4mtjaKr )
+
+**All our scripts are and will remain free**. If you want to support what we do, you can buy us a coffee here:
+
+[![Buy Us a Coffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/cwscriptbois )
 
 # Preview 
 
