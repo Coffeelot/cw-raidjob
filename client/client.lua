@@ -372,7 +372,7 @@ end
 local function SpawnCase()
     local FetchItemRandom = Config.Jobs[currentJobId].Items.FetchItemRandom
 
-    local prop = 'hei_prop_hei_security_case'
+    local prop = 'prop_security_case_01'
     if Config.Jobs[currentJobId].Items.FetchItemProp then
         prop = Config.Jobs[currentJobId].Items.FetchItemProp
     end
@@ -539,14 +539,12 @@ local function StartMinigame()
 end
 
 RegisterNetEvent('cw-raidjob:client:items', function()
-    QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
-        if result then
-            TriggerEvent("qb-dispatch:raidJob")
-            StartMinigame()
-        else
-            QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
-        end
-    end, "casekey")
+    if QBCore.Functions.HasItem("casekey") then
+        TriggerEvent("qb-dispatch:raidJob")
+        StartMinigame()
+    else
+        QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
+    end
 end)
 
 RegisterNetEvent('cw-raidjob:client:reward', function(data)
@@ -555,31 +553,29 @@ RegisterNetEvent('cw-raidjob:client:reward', function(data)
     if Config.Debug then
         print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
     end
-    QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
-        if result then
-            TriggerEvent('animations:client:EmoteCommandStart', {"suitcase2"})
-            QBCore.Functions.Progressbar("product_check", Lang:t('info.checking_quality'), 7000, false, true, {
-                disableMovement = true,
-                disableCarMovement = true,
-                disableMouse = false,
-                disableCombat = true,
-            }, {
-            }, {}, {}, function() -- Done
-                TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                ClearPedTasks(PlayerPedId())
-                TriggerServerEvent('cw-raidjob:server:rewardpayout', jobId)
+    if QBCore.Functions.HasItem(QBCore.Shared.Items[items.FetchItemContents].name , items.FetchItemContentsAmount) then
+        TriggerEvent('animations:client:EmoteCommandStart', {"suitcase2"})
+        QBCore.Functions.Progressbar("product_check", Lang:t('info.checking_quality'), 7000, false, true, {
+            disableMovement = true,
+            disableCarMovement = true,
+            disableMouse = false,
+            disableCombat = true,
+        }, {
+        }, {}, {}, function() -- Done
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            ClearPedTasks(PlayerPedId())
+            TriggerServerEvent('cw-raidjob:server:rewardpayout', jobId)
 
-                QBCore.Functions.Notify(Lang:t("success.you_got_paid"), 'success')
-                onRun = false
-                currentJobId = nil
-            end, function()
-                TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
-            end)
-        else
-            QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
-        end
-    end, QBCore.Shared.Items[items.FetchItemContents].name , items.FetchItemContentsAmount)
+            QBCore.Functions.Notify(Lang:t("success.you_got_paid"), 'success')
+            onRun = false
+            currentJobId = nil
+        end, function()
+            TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+            QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
+        end)
+    else
+        QBCore.Functions.Notify(Lang:t("error.you_cannot_do_this"), 'error')
+    end
 end)
 
 RegisterCommand('raid', function (input)
