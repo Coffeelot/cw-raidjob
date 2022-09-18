@@ -1,6 +1,7 @@
 Config = {}
 Config.Debug = false
 
+Config.RemoveItemsOnDeath = true 
 Config.UseTokens = false -- false = use price, true = use cw-tokens
 Config.Cooldown = 1 --- Cooldown until next allowed meth run
 Config.DefaultValues = {

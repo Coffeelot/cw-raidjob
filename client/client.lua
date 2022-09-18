@@ -38,7 +38,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
 end)
 
 RegisterNetEvent('baseevents:onPlayerDied', function()
-    if onRun then
+    if onRun and Config.RemoveItemsOnDeath then
         if Config.Debug then
             print('Player was on run and got revived')
         end
