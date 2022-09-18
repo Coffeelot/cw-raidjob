@@ -6,6 +6,7 @@ local Translations = {
         ["you_failed"]                  = "You failed!",
         ["you_cannot_do_this"]          = "You cannot do this..",
         ["you_dont_have_enough_money"]  = "You Dont Have Enough Money",
+        ["you_dont_have_the_case"]  = "You didn't have the case on you.",
     },
     success = {
         ["case_has_been_unlocked"]              = "Security case has been unlocked",

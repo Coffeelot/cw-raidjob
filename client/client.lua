@@ -17,17 +17,11 @@ local npcs = {
 }
 
 local function CleanUp()
-    print('Cleanup')
-    for i,npcType in pairs(npcs) do
-        for j,v in pairs(npcType) do
-            DeletePed(v)
-        end
+    if Config.Debug then
+        print('Cleanup')
+    
     end
-    npcs = {
-        ['npcguards'] = {},
-        ['npccivilians'] = {}
-    }
-    TriggerServerEvent('cw-raidjob:server:cleanUp', currentJobIddw )
+    TriggerServerEvent('cw-raidjob:server:cleanUp', currentJobId )
     if case then
         DeleteEntity(case)
     end
@@ -43,7 +37,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
 end)
 
-RegisterNetEvent('hospital:client:Revive', function()
+RegisterNetEvent('baseevents:onPlayerDied', function()
     if onRun then
         if Config.Debug then
             print('Player was on run and got revived')
@@ -228,9 +222,15 @@ local function Itemtimemsg()
     Citizen.Wait(Config.Jobs[currentJobId].Items.FetchItemTime)
     RemoveBlip(playerCase)
     QBCore.Functions.Notify(Lang:t("success.case_beep_stop"), 'success')
-    TriggerServerEvent('cw-raidjob:server:givecaseitems', currentJobId)
+
+    local itemInPockets = QBCore.Functions.HasItem(Config.Jobs[currentJobId].Items.FetchItem)
+    if itemInPockets then
+        TriggerServerEvent('cw-raidjob:server:givecaseitems', currentJobId)
+        QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
+    else
+        QBCore.Functions.Notify(Lang:t("error.you_dont_have_the_case"), 'error')      
+    end
     currentJobId = nil
-    QBCore.Functions.Notify(Lang:t("success.case_has_been_unlocked"), 'success')
 end
 
 
