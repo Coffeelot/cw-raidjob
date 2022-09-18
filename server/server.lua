@@ -90,7 +90,17 @@ RegisterServerEvent('cw-raidjob:server:givecaseitems', function (jobId)
     local items = Config.Jobs[jobId].Items
 
 	Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
-    Player.Functions.RemoveItem(items.FetchItem, 1)
-	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "add")
+    Player.Functions.RemoveItem("casekey", 1)
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
+end)
+
+RegisterServerEvent('cw-raidjob:server:cleanUp', function (jobId)
+    local src = source
+	local Player = QBCore.Functions.GetPlayer(src)
+    local items = Config.Jobs[jobId].Items
+
+	Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
+    Player.Functions.RemoveItem(items.FetchItem, 1)
+    TriggerClientEvent('QBCore:Notify', src, "The key is broken", 'error')
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "remove")
 end)

@@ -11,6 +11,28 @@ local caseBlip = nil
 local blipCircle = nil
 local playerCase = nil
 
+local npcs = {
+    ['npcguards'] = {},
+    ['npccivilians'] = {}
+}
+
+local function CleanUp()
+    print('Cleanup')
+    for i,npcType in pairs(npcs) do
+        for j,v in pairs(npcType) do
+            DeletePed(v)
+        end
+    end
+    npcs = {
+        ['npcguards'] = {},
+        ['npccivilians'] = {}
+    }
+    TriggerServerEvent('cw-raidjob:server:cleanUp', currentJobIddw )
+    if case then
+        DeleteEntity(case)
+    end
+end
+
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.GetPlayerData(function(PlayerData)
         PlayerJob = PlayerData.job
@@ -21,8 +43,15 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
 end)
 
-RegisterNetEvent('police:SetCopCount', function(amount)
-    CurrentCops = amount
+RegisterNetEvent('hospital:client:Revive', function()
+    if onRun then
+        if Config.Debug then
+            print('Player was on run and got revived')
+        end
+        onRun = false
+        hasKey = false
+        CleanUp()
+    end
 end)
 
 local function shallowCopy(original)
@@ -233,12 +262,6 @@ RegisterNetEvent('cw-raidjob:client:start', function (data)
         QBCore.Functions.Notify(Lang:t("error.cannot_do_this_right_now"), 'error')
     end
 end)
-
-local npcs = {
-    ['npcguards'] = {},
-    ['npccivilians'] = {}
-}
-
 
 local function loadModel(model)
     if type(model) ~= 'number' then
