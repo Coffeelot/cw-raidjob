@@ -89,8 +89,9 @@ RegisterServerEvent('cw-raidjob:server:givecaseitems', function (jobId)
 	local Player = QBCore.Functions.GetPlayer(src)
     local items = Config.Jobs[jobId].Items
 
-	Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
-    Player.Functions.RemoveItem("casekey", 1)
+    Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
+    Player.Functions.RemoveItem(items.FetchItem, 1)
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "add")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
 end)
 
