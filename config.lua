@@ -82,10 +82,6 @@ local CokeItems = {
     FetchItemProp = 'hei_prop_hei_security_case', -- item (world object)
     FetchItemContents = 'coke_pure', -- item that drops from FetchItem after FetchItemTime is over
     FetchItemContentsAmount = 20, -- Amount of FetchItemContent items
-    FetchItemMinigame = {
-        Type = 'Circle',
-        Variables = { 2, 20 }
-    }
 }
 
 -- These will be used to pick random spots for the guards
@@ -180,7 +176,11 @@ local WeedItems = {
     FetchItem = 'securitycase', -- item (inventory)
     FetchItemProp = 'hei_prop_hei_security_case', -- item (world object)
     FetchItemContents = 'weed_notes', -- item that drops from FetchItem after FetchItemTime is over
-    FetchItemContentsAmount = 1 -- Amount of FetchItemContent items
+    FetchItemContentsAmount = 1, -- Amount of FetchItemContent items
+    FetchItemMinigame = {
+        Type = 'Circle',
+        Variables = { 2, 20 }
+    }
 }
 
 local WeedGuards = {

@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject() 
 local Cooldown = false
-
+local useDebug = Config.Debug
 
 
 RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
@@ -11,7 +11,9 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
     if Config.UseTokens and Config.Jobs[jobId].Token then
         TriggerEvent('cw-tokens:server:TakeToken', src, Config.Jobs[jobId].Token)
         Player.Functions.AddItem("casekey", 1)
-        print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName.. ' | using Tokens')
+        if useDebug then
+           print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName.. ' | using Tokens')
+        end
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
         TriggerClientEvent("cw-raidjob:client:runactivate", src)
         TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
@@ -20,7 +22,9 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
         if Player.PlayerData.money['cash'] >= Config.Jobs[jobId].RunCost then
             Player.Functions.RemoveMoney('cash', Config.Jobs[jobId].RunCost, "Running Costs")
             Player.Functions.AddItem("casekey", 1)
-            print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName)
+            if useDebug then
+               print('current job - id:'..jobId..' name: '..Config.Jobs[jobId].JobName)
+            end
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
             TriggerClientEvent("cw-raidjob:client:runactivate", src)
             TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
@@ -76,7 +80,9 @@ RegisterServerEvent('cw-raidjob:server:rewardpayout', function (jobId)
 
     for k, v in pairs(Config.Jobs[jobId].SpecialRewards) do
         local chance = math.random(0,100)
-        print('chance for '..v.Item..': '..chance)
+        if useDebug then
+           print('chance for '..v.Item..': '..chance)
+        end
         if chance < v.Chance then 
             Player.Functions.AddItem(v.Item, v.Amount)
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[v.Item], "add")
@@ -89,9 +95,8 @@ RegisterServerEvent('cw-raidjob:server:givecaseitems', function (jobId)
 	local Player = QBCore.Functions.GetPlayer(src)
     local items = Config.Jobs[jobId].Items
 
-    Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
-    Player.Functions.RemoveItem(items.FetchItem, 1)
-    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItemContents], "add")
+	Player.Functions.AddItem(items.FetchItemContents, items.FetchItemContentsAmount)
+    Player.Functions.RemoveItem("casekey", 1)
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
 end)
 
@@ -108,3 +113,9 @@ RegisterServerEvent('cw-raidjob:server:cleanUp', function (jobId)
 
     TriggerClientEvent('QBCore:Notify', src, "The items seem to have broken", 'error')
 end)
+
+QBCore.Commands.Add('cwdebugraid', 'toggle debug for raid', {}, true, function(source, args)
+    useDebug = not useDebug
+    print('debug is now:', useDebug)
+    TriggerClientEvent('cw-raidjob:client:toggleDebug',source, useDebug)
+end, 'admin')

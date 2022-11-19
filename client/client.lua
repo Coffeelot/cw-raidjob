@@ -10,6 +10,8 @@ local case = nil
 local caseBlip = nil
 local blipCircle = nil
 local playerCase = nil
+local useDebug = Config.Debug
+local Entities = {}
 
 local npcs = {
     ['npcguards'] = {},
@@ -17,7 +19,7 @@ local npcs = {
 }
 
 local function CleanUp()
-    if Config.Debug then
+    if useDebug then
         print('Cleanup')
     
     end
@@ -25,6 +27,15 @@ local function CleanUp()
     if case then
         DeleteEntity(case)
     end
+    for i,npcType in pairs(npcs) do
+        for j,v in pairs(npcType) do
+            DeletePed(v)
+        end
+    end
+    npcs = {
+        ['npcguards'] = {},
+        ['npccivilians'] = {}
+    }
 end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -39,7 +50,7 @@ end)
 
 RegisterNetEvent('baseevents:onPlayerDied', function()
     if onRun and Config.RemoveItemsOnDeath then
-        if Config.Debug then
+        if useDebug then
             print('Player was on run and got revived')
         end
         onRun = false
@@ -68,7 +79,7 @@ end
 --- Create bosses
 CreateThread(function()
     for i,v in pairs(Config.Jobs) do
-        if Config.Debug then
+        if useDebug then
             print('creating data for job: '..v.JobName.. ' with id: '..i.. ' with boss: '.. v.Boss.model)
         end
         local boss = v.Boss
@@ -89,7 +100,7 @@ CreateThread(function()
         else
             title = title.. ' $'..v.RunCost
         end
-        exports['qb-target']:SpawnPed({
+        Entities[#Entities+1] = exports['qb-target']:SpawnPed({
             model = boss.model,
             coords = boss.coords,
             minusOne = true,
@@ -231,6 +242,8 @@ local function Itemtimemsg()
         QBCore.Functions.Notify(Lang:t("error.you_dont_have_the_case"), 'error')      
     end
     currentJobId = nil
+    Wait(20000)
+    CleanUp()
 end
 
 
@@ -308,9 +321,10 @@ local function SpawnGuards()
         npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
         NetworkRegisterEntityAsNetworked(npcs['npcguards'][k])
         local networkID = NetworkGetNetworkIdFromEntity(npcs['npcguards'][k])
-        if Config.Debug then
+        if useDebug then
             print('networkid: ', networkID)
         end
+        TaskCombatPed(npcs['npcguards'][k], PlayerPedId(), 0, 16)
         SetNetworkIdCanMigrate(networkID, true)
         SetNetworkIdExistsOnAllMachines(networkID, true)
         SetPedRandomComponentVariation(npcs['npcguards'][k], 0)
@@ -401,7 +415,7 @@ local function SpawnCase()
     end
 
     if FetchItemRandom ~= nil then
-        if Config.Debug then
+        if useDebug then
             print('has random case location')
         end
         local caseLocation = FetchItemRandom.Locations[math.random(1,#FetchItemRandom.Locations)]
@@ -419,7 +433,7 @@ local function SpawnCase()
         SetNewWaypoint(circleCenter.x, circleCenter.y)
      
     else
-        if Config.Debug then
+        if useDebug then
             print('does NOT have random case location')
         end
         local caseLocation = Config.Jobs[currentJobId].Items.FetchItemLocation
@@ -573,7 +587,7 @@ end)
 RegisterNetEvent('cw-raidjob:client:reward', function(data)
     local jobId = data.jobId
     local items = Config.Jobs[jobId].Items
-    if Config.Debug then
+    if useDebug then
         print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
     end
     if QBCore.Functions.HasItem(QBCore.Shared.Items[items.FetchItemContents].name , items.FetchItemContentsAmount) then
@@ -601,10 +615,6 @@ RegisterNetEvent('cw-raidjob:client:reward', function(data)
     end
 end)
 
-RegisterCommand('raid', function (input)
-    TriggerEvent('cw-raidjob:client:start', input)
-end)
-
 RegisterNetEvent('cw-boostjob:client:caseTheftCall', function()
     if not isLoggedIn then return end
     local PlayerJob = QBCore.Functions.GetPlayerData().job
@@ -622,3 +632,18 @@ RegisterNetEvent('cw-boostjob:client:caseTheftCall', function()
         TriggerServerEvent('police:server:policeAlert', "Theft (Tracker active)")
     end
 end)
+
+RegisterNetEvent('cw-raidjob:client:toggleDebug', function(debug)
+   print('Setting debug to',debug)
+   useDebug = debug
+end)
+
+AddEventHandler('onResourceStop', function (resource)
+    if resource ~= GetCurrentResourceName() then return end
+    for i, entity in pairs(Entities) do
+        print('deleting', entity)
+        if DoesEntityExist(entity) then
+           DeleteEntity(entity)
+        end
+     end
+ end)
