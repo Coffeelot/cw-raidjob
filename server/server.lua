@@ -108,10 +108,8 @@ RegisterServerEvent('cw-raidjob:server:cleanUp', function (jobId)
     Player.Functions.RemoveItem(items.FetchItem, 1)
     Player.Functions.RemoveItem("casekey", 1)
     
-	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "add")
+	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "remove")
-
-    TriggerClientEvent('QBCore:Notify', src, "The items seem to have broken", 'error')
 end)
 
 QBCore.Commands.Add('cwdebugraid', 'toggle debug for raid', {}, true, function(source, args)

@@ -27,10 +27,15 @@ local function CleanUp()
     if case then
         DeleteEntity(case)
     end
+    local counter = 0
     for i,npcType in pairs(npcs) do
         for j,v in pairs(npcType) do
+            counter = counter+1
             DeletePed(v)
         end
+    end
+    if useDebug then
+        print('Cleaned up', counter, 'npcs')
     end
     npcs = {
         ['npcguards'] = {},
@@ -53,9 +58,10 @@ RegisterNetEvent('baseevents:onPlayerDied', function()
         if useDebug then
             print('Player was on run and got revived')
         end
+        CleanUp()
+        currentJobId=nil
         onRun = false
         hasKey = false
-        CleanUp()
     end
 end)
 
@@ -241,9 +247,9 @@ local function Itemtimemsg()
     else
         QBCore.Functions.Notify(Lang:t("error.you_dont_have_the_case"), 'error')      
     end
-    currentJobId = nil
     Wait(20000)
     CleanUp()
+    currentJobId = nil
 end
 
 
@@ -394,7 +400,7 @@ local function SpawnCivilians()
 
             local animation = "CODE_HUMAN_COWER"
             if v.animation then
-                animation = v.animation
+                animation = v.animationt
             end
             TaskStartScenarioInPlace(npcs['npccivilians'][k],  animation, 0, true)
             Wait(1000) -- cheap way to fix npcs not spawning
