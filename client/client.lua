@@ -53,6 +53,10 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
 end)
 
+RegisterNetEvent('police:SetCopCount', function(amount)
+    CurrentCops = amount
+end)
+
 RegisterNetEvent('baseevents:onPlayerDied', function()
     if onRun and Config.RemoveItemsOnDeath then
         if useDebug then
