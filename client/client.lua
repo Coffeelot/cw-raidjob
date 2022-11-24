@@ -534,7 +534,7 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
     SpawnGuards()
     SpawnCivilians()
     SpawnCase()
-    if Config.Job[jobid].CamActive then
+    if Config.Job[currentJobId].CamActive then
     	Cam(currentJobId)
     end
     FirstMessages()
