@@ -399,7 +399,7 @@ local function SpawnGuards()
         if random == 2 then
             TaskGuardCurrentPosition(npcs['npcguards'][k], 10.0, 10.0, 1)
         end
-        Wait(1000) -- cheap way to fix npcs not spawning
+        Wait(500) -- cheap way to fix npcs not spawning
     end
 
     SetRelationshipBetweenGroups(0, 'npcguards', 'npcguards')
@@ -450,7 +450,7 @@ local function SpawnCivilians()
                 animation = v.animationt
             end
             TaskStartScenarioInPlace(npcs['npccivilians'][k],  animation, 0, true)
-            Wait(1000) -- cheap way to fix npcs not spawning
+            Wait(500) -- cheap way to fix npcs not spawning
         end
 
         SetRelationshipBetweenGroups(3, 'npccivilians', 'npccivilians')
