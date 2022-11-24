@@ -82,6 +82,48 @@ local function canInteract(value)
     if tokens ~=nil and tokens[value] then return true else return false end
 end
 
+function Cam(data)
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+    DoScreenFadeOut(300)
+    Wait(350)
+    SetCinematicModeActive(true)
+    SetEntityVisible(ped, false)
+    SetEntityCoords(ped, Config.Jobs[data].camera.x, Config.Jobs[data].camera.y, Config.Jobs[data].camera.z + 100, true, false, false, false)
+    FreezeEntityPosition(ped, true)
+    curCam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', Config.Jobs[data].camera.x, Config.Jobs[data].camera.y, Config.Jobs[data].camera.z, 0.0, 360.0, 180.0, 85.00, false, 0)
+    print("cam active")
+    PointCamAtCoord(curCam, Config.Jobs[data].camerapoint.x, Config.Jobs[data].camerapoint.y, Config.Jobs[data].camerapoint.z)
+    SetCamActive(curCam, true)
+    RenderScriptCams(true, true, 1, true, true)
+    Citizen.Wait(1500)
+    DoScreenFadeIn(500)
+    Wait(300)
+    local active = IsCamActive(curCam)
+    if not active then
+        Wait(100)
+    else
+        SetCamParams(curCam, Config.Jobs[data].camoffset.x, Config.Jobs[data].camoffset.y, Config.Jobs[data].camoffset.z, 0.0, 100.0, 0.0, 85.0, Config.Jobs[data].transition or 5000, 1, 3, 1)
+        Wait(Config.Jobs[data].transition or 5000)
+        DoScreenFadeOut(300)
+        Wait(350)
+        RenderScriptCams(false, true, 1000, true, true)
+        if DoesCamExist(curCam) then
+            DestroyCam(curCam, true)
+        end
+        Wait(1000)
+        SetEntityCoords(ped, coords.x, coords.y, coords.z - 0.8, true, false, false, false)
+        FreezeEntityPosition(ped, false)
+        SetEntityVisible(ped, true)
+        SetCinematicModeActive(false)
+        DoScreenFadeIn(300)
+    end
+    while active do
+        PointCamAtCoord(curCam, Config.Jobs[data].camerapoint.x, Config.Jobs[data].camerapoint.y, Config.Jobs[data].camerapoint.z)
+        Wait(100)
+    end
+end
+
 --- Create bosses
 CreateThread(function()
     for i,v in pairs(Config.Jobs) do
@@ -259,24 +301,29 @@ RegisterNetEvent('cw-raidjob:client:start', function (data)
         currentJobId = data.jobId
         QBCore.Functions.TriggerCallback("cw-raidjob:server:coolc",function(isCooldown)
             if not isCooldown then
-                TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
-                QBCore.Functions.Progressbar("start_job", Lang:t('info.talking_to_boss'), 10000, false, true, {
-                    disableMovement = true,
-                    disableCarMovement = true,
-                    disableMouse = false,
-                    disableCombat = true,
-                }, {
-                }, {}, {}, function() -- Done
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                local Player = QBCore.Functions.GetPlayerData()
+                if Player.money['cash'] >= Config.Jobs[data.jobId].RunCost then
                     TriggerServerEvent('cw-raidjob:server:startr', currentJobId)
-                end, function() -- Cancel
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                    QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
-                end)
+                    TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
+                    QBCore.Functions.Progressbar("start_job", Lang:t('info.talking_to_boss'), 15000, false, true, {
+                        disableMovement = true,
+                        disableCarMovement = true,
+                        disableMouse = false,
+                        disableCombat = true,
+                    }, {
+                    }, {}, {}, function() -- Done
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                    end, function() -- Cancel
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                        QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
+                    end)
+                else
+                    QBCore.Functions.Notify('Too Broke', 'error', 5000)
+                end
             else
                 QBCore.Functions.Notify(Lang:t("error.someone_recently_did_this"), 'error')
             end
-        end)    
+        end)
     else
         QBCore.Functions.Notify(Lang:t("error.cannot_do_this_right_now"), 'error')
     end
@@ -352,7 +399,7 @@ local function SpawnGuards()
         if random == 2 then
             TaskGuardCurrentPosition(npcs['npcguards'][k], 10.0, 10.0, 1)
         end
-        Wait(1000) -- cheap way to fix npcs not spawning
+        Wait(500) -- cheap way to fix npcs not spawning
     end
 
     SetRelationshipBetweenGroups(0, 'npcguards', 'npcguards')
@@ -403,7 +450,7 @@ local function SpawnCivilians()
                 animation = v.animationt
             end
             TaskStartScenarioInPlace(npcs['npccivilians'][k],  animation, 0, true)
-            Wait(1000) -- cheap way to fix npcs not spawning
+            Wait(500) -- cheap way to fix npcs not spawning
         end
 
         SetRelationshipBetweenGroups(3, 'npccivilians', 'npccivilians')
@@ -483,6 +530,9 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
     SpawnGuards()
     SpawnCivilians()
     SpawnCase()
+    if Config.Job[jobid].CamActive then
+    	Cam(currentJobId)
+    end
     FirstMessages()
 end)
 

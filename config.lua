@@ -63,7 +63,11 @@ local MethJob = {
     MinimumPolice = 0,
     RunCost = 10000,
     Payout =  MethJobPayout,
-    SpecialRewards = MethSpecialRewards  
+    SpecialRewards = MethSpecialRewards,
+    CamActive = true,
+    camera = vector3(3889.22, 4464.16, 17.06),
+    camerapoint = vector3(3829.1, 4471.77, 3.08),
+    camoffset = vector3(3834.06, 4469.18, 5.86)
 }
 
 -- Cocaine job
@@ -158,7 +162,11 @@ local CokeJob = {
     RunCost = 15000,
     Payout =  math.random(150000, 220000),
     SpecialRewards = CokeSpecialRewards,
-    Messages = CokeMessages 
+    Messages = CokeMessages,
+    CamActive = false,
+    camera = vector3(-2014.32, -1016.42, 15.96),
+    camerapoint = vector3(-2067.22, -1023.66, 8.89),
+    camoffset = vector3(-2117.28, -1012.29, 16.01)
 }
 
 -- Weed job
@@ -213,7 +221,11 @@ local WeedJob = {
     MinimumPolice = 0,
     RunCost = 500,
     Payout =  math.random(15000, 22000),
-    SpecialRewards = WeedSpecialRewards  
+    SpecialRewards = WeedSpecialRewards,
+    CamActive = false,
+    camera = vector3(2233.61, 5545.18, 78.83),
+    camerapoint = vector3(2194.96, 5601.54, 54.61),
+    camoffset = vector3(2256.33, 5631.74, 78.83)
 }
 
 -- Clown job
@@ -281,7 +293,11 @@ local ClownJob = {
     RunCost = 200,
     Payout =  math.random(3000, 4000),
     SpecialRewards = ClownSpecialRewards,
-    Messages = ClownMessages
+    Messages = ClownMessages,
+    CamActive = false,
+    camera = vector3(-1542.66, 2068.95, 92.41),
+    camerapoint = vector3(-1578.44, 2099.56, 67.54),
+    camoffset = vector3(-1572.42, 2094.17, 72.63)
 }
 
 -- Art job
@@ -393,7 +409,11 @@ local ArtJob = {
     RunCost = 35000,
     Payout =  math.random(270000, 300000),
     SpecialRewards = ArtSpecialRewards,
-    Messages = ArtMessages 
+    Messages = ArtMessages,
+    CamActive = false,
+    camera = vector3(48.51, 518.04, 174.9),
+    camerapoint = vector3(8.79, 522.09, 173.58),
+    camoffset = vector3(5.15, 501.15, 173.04)
 }
 
 Config.Jobs = {
