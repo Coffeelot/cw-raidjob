@@ -18,6 +18,8 @@ local npcs = {
     ['npccivilians'] = {}
 }
 
+local vehicles = {}
+
 local function CleanUp()
     if useDebug then
         print('Cleanup')
@@ -34,13 +36,19 @@ local function CleanUp()
             DeletePed(v)
         end
     end
+    for i,vehicle in pairs(vehicles) do
+        counter = counter+1
+        DeleteEntity(vehicle)
+    end
     if useDebug then
-        print('Cleaned up', counter, 'npcs')
+        print('Cleaned up', counter, 'entities')
     end
     npcs = {
         ['npcguards'] = {},
         ['npccivilians'] = {}
     }
+    vehicles = {}
+
 end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -325,12 +333,11 @@ local function SpawnGuards()
         -- print('Guard location: ', guardPosition)
         loadModel(v.model)
         npcs['npcguards'][k] = CreatePed(26, GetHashKey(v.model), guardPosition, true, true)
-        NetworkRegisterEntityAsNetworked(npcs['npcguards'][k])
         local networkID = NetworkGetNetworkIdFromEntity(npcs['npcguards'][k])
         if useDebug then
-            print('networkid: ', networkID)
+            print(npcs['npcguards'][k], 'networkid: ', networkID)
         end
-        TaskCombatPed(npcs['npcguards'][k], PlayerPedId(), 0, 16)
+        --TaskCombatPed(npcs['npcguards'][k], PlayerPedId(), 0, 16)
         SetNetworkIdCanMigrate(networkID, true)
         SetNetworkIdExistsOnAllMachines(networkID, true)
         SetPedRandomComponentVariation(npcs['npcguards'][k], 0)
@@ -343,6 +350,7 @@ local function SpawnGuards()
         SetPedCanSwitchWeapon(npcs['npcguards'][k], true)
         SetPedDropsWeaponsWhenDead(npcs['npcguards'][k], false)
         SetPedFleeAttributes(npcs['npcguards'][k], 0, false)
+        SetPedCombatAttributes(npcs['npcguards'][k], 46, true)
         local weapon = 'WEAPON_PISTOL'
         if v.weapon then
             weapon = v.weapon
@@ -477,7 +485,7 @@ RegisterNetEvent('cw-raidjob:client:runactivate', function()
             end
 
             ClearAreaOfVehicles(VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, 15.0, false, false, false, false, false)
-            transport = CreateVehicle(v.model, VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, VehicleCoords.w, true, true)   
+            vehicles[i] = CreateVehicle(v.model, VehicleCoords.x, VehicleCoords.y, VehicleCoords.z, VehicleCoords.w, true, true)   
     end
     end
     SpawnGuards()

@@ -216,72 +216,57 @@ local WeedJob = {
     SpecialRewards = WeedSpecialRewards  
 }
 
--- Clown job
-local ClownBoss = {
-    coords = vector4(-1200.88, -1554.56, 4.33, 301.29),
-    model = 's_m_m_strperf_01',
-    missionTitle = "Do you hate clowns too?  to get your hands dirty?",
-    animation = 'WORLD_HUMAN_HUMAN_STATUE', -- OPTIONAL https://pastebin.com/6mrYTdQv
-    available = { from = 10 , to = 13 }
-}
-
-local ClownItems = {
-    FetchItemLocation = vector4(-1578.44, 2099.56, 67.54, 343.32),
-    FetchItemTime = 30000, -- time it takes for the item to activate
-    FetchItem = 'securitycase', -- item (inventory)
-    FetchItemProp = 'hei_prop_hei_security_case', -- item (world object)
-    FetchItemContents = 'clown_notes', -- item that drops from FetchItem after FetchItemTime is over
-    FetchItemContentsAmount = 1 -- Amount of FetchItemContent items
-}
-
--- These will be used to pick random spots for the guards
-local ClownGuardPositions = {
-    vector4(-1579.7, 2097.14, 68.85, 9.44),
-    vector4(-1566.39, 2100.68, 68.97, 346.99),
-    vector4(-1581.25, 2089.2, 70.51, 31.35),
-    vector4(-1586.97, 2104.1, 67.43, 336.84),
-    vector4(-1583.12, 2109.8, 66.01, 314.2),
-    vector4(-1571.17, 2118.67, 62.83, 343.53),
-    vector4(-1568.33, 2118.86, 62.76, 283.28),
-    vector4(-1569.99, 2107.57, 65.99, 212.12),    
-}
-
-local ClownGuards = {
-        { model = 's_m_y_clown_01', weapon = 'weapon_snspistol'},
-        { model = 's_m_y_clown_01', weapon = 'weapon_snspistol'},
-        { model = 's_m_y_clown_01', weapon = 'weapon_snspistol'},
-        { model = 's_m_y_clown_01', weapon = 'weapon_snspistol'},
-        { coords = vector4(-1575.7, 2100.51, 68.36, 91.81), model = 's_m_y_clown_01', weapon = 'weapon_snspistol'},
-        { coords = vector4(-1578.12, 2101.79, 68.15, 143.86), model = 's_m_y_clown_01', weapon = 'weapon_minismg'},
-}
-
-local ClownVehicles = {
-    { coords = vector4(-1582.67, 2098.87, 70.23, 12.97), model = 'speedo2'}
-}
-
-local ClownSpecialRewards = {
-    { Item = 'xtcbaggy', Amount = math.random(10, 30), Chance = 90 },
-    { Item = 'nitrous', Amount = 1, Chance = 30 }
-}
-
-local ClownMessages = {
-    Sender = 'Unknown',
-    Subject = 'HONK HONK',
-    Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me 🗿"
-}
-
+-- Clown job - Good example of how you can create a job without splitting up all the parts
 local ClownJob = {
     JobName = 'clown',
-    Boss = ClownBoss,
-    Guards = ClownGuards,
-    GuardPositions = ClownGuardPositions,
-    Vehicles = ClownVehicles,
-    Items = ClownItems,
+    Boss = {
+        coords = vector4(-1200.88, -1554.56, 4.33, 301.29),
+        model = 's_m_m_strperf_01',
+        missionTitle = "Do you hate clowns too?  to get your hands dirty?",
+        animation = 'WORLD_HUMAN_HUMAN_STATUE', -- OPTIONAL https://pastebin.com/6mrYTdQv
+        available = { from = 10 , to = 13 }
+    },
+    Guards = {
+        { model = 's_m_y_clown_01', weapon = 'weapon_unarmed'},
+        { model = 's_m_y_clown_01', weapon = 'weapon_garbagebag'},
+        { model = 's_m_y_clown_01', weapon = 'weapon_golfclub'},
+        { model = 's_m_y_clown_01', weapon = 'weapon_hatchet'},
+        { coords = vector4(-1575.7, 2100.51, 68.36, 91.81), model = 's_m_y_clown_01', weapon = 'weapon_bottle'},
+        { coords = vector4(-1578.12, 2101.79, 68.15, 143.86), model = 's_m_y_clown_01', weapon = 'weapon_musket'},
+    },
+    GuardPositions = {
+        vector4(-1579.7, 2097.14, 68.85, 9.44),
+        vector4(-1566.39, 2100.68, 68.97, 346.99),
+        vector4(-1581.25, 2089.2, 70.51, 31.35),
+        vector4(-1586.97, 2104.1, 67.43, 336.84),
+        vector4(-1583.12, 2109.8, 66.01, 314.2),
+        vector4(-1571.17, 2118.67, 62.83, 343.53),
+        vector4(-1568.33, 2118.86, 62.76, 283.28),
+        vector4(-1569.99, 2107.57, 65.99, 212.12),    
+    },
+    Vehicles = {
+        { coords = vector4(-1582.67, 2098.87, 70.23, 12.97), model = 'speedo2'}
+    },
+    Items = {
+        FetchItemLocation = vector4(-1578.44, 2099.56, 67.54, 343.32),
+        FetchItemTime = 30000, -- time it takes for the item to activate
+        FetchItem = 'securitycase', -- item (inventory)
+        FetchItemProp = 'hei_prop_hei_security_case', -- item (world object)
+        FetchItemContents = 'clown_notes', -- item that drops from FetchItem after FetchItemTime is over
+        FetchItemContentsAmount = 1 -- Amount of FetchItemContent items
+    },
     MinimumPolice = 0,
     RunCost = 200,
     Payout =  math.random(3000, 4000),
-    SpecialRewards = ClownSpecialRewards,
-    Messages = ClownMessages
+    SpecialRewards = {
+        { Item = 'xtcbaggy', Amount = math.random(10, 30), Chance = 90 },
+        { Item = 'nitrous', Amount = 1, Chance = 30 }
+    },
+    Messages = {
+        Sender = 'Unknown',
+        Subject = 'HONK HONK',
+        Message = "Honk honk mother fucker it's me. Time to pie some clowns! Send you the GPS location of where they are. Head over there and steal the secrets of the clowns for me"
+    }
 }
 
 -- Art job
