@@ -25,7 +25,9 @@ local function CleanUp()
         print('Cleanup')
     
     end
+    if currentJobId then
     TriggerServerEvent('cw-raidjob:server:cleanUp', currentJobId )
+    end
     if case then
         DeleteEntity(case)
     end
