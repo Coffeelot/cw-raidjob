@@ -13,7 +13,7 @@ Config.DefaultValues = {
 local MethBoss = {
     coords = vector4(-2609.76, 1867.66, 167.32, 347.67),
     model = 'g_m_m_mexboss_01',
-    missionTitle = "Accept meth raid",
+    missionTitle = "Start Meth Raid",
     available = {from = 21, to = 6},
 }
 
@@ -75,7 +75,7 @@ local MethJob = {
 local CokeBoss = {
     coords = vector4(-2612.29, 1869.73,  167.32, 277.32),
     model = 's_m_m_movprem_01',
-    missionTitle = "Accept cocaine raid",
+    missionTitle = "Start Cocaine Raid",
     animation = 'WORLD_HUMAN_GUARD_STAND', -- OPTIONAL https://pastebin.com/6mrYTdQv
     available = {from = 6, to = 18}
 }
@@ -175,7 +175,7 @@ local CokeJob = {
 local WeedBoss = {
     coords = vector4(526.69, -1655.61, 29.36, 60.04),
     model = 'g_f_importexport_01',
-    missionTitle = "Accept weed raid",
+    missionTitle = "Start Weed Raid",
     animation = 'WORLD_HUMAN_SMOKING_POT', -- OPTIONAL https://pastebin.com/6mrYTdQv
     available = {from = 10, to = 20}
 }
@@ -238,7 +238,7 @@ local ClownJob = {
     Boss = {
         coords = vector4(-1200.88, -1554.56, 4.33, 301.29),
         model = 's_m_m_strperf_01',
-        missionTitle = "Do you hate clowns too?  to get your hands dirty?",
+        missionTitle = "Start Clown Job",
         animation = 'WORLD_HUMAN_HUMAN_STATUE', -- OPTIONAL https://pastebin.com/6mrYTdQv
         available = { from = 10 , to = 13 }
     },
@@ -289,7 +289,7 @@ local ClownJob = {
 local ArtBoss = {
     coords = vector4(-1108.53, 156.21, 63.04, 70.21),
     model = 'a_m_m_golfer_01',
-    missionTitle = "Accept art theft job",
+    missionTitle = "Start Art Theft",
     animation = 'WORLD_HUMAN_GOLF_PLAYER', -- OPTIONAL https://pastebin.com/6mrYTdQv
     available = {from = 14, to = 19}
 }
