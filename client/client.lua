@@ -118,58 +118,60 @@ CreateThread(function()
         else
             title = title.. ' $'..v.RunCost
         end
-        Entities[#Entities+1] = exports['qb-target']:SpawnPed({
-            model = boss.model,
-            coords = boss.coords,
-            minusOne = true,
-            freeze = true,
-            invincible = true,
-            blockevents = true,
-            scenario = animation,
-            target = {
-                options = {
-                    { 
-                        type = "client",
-                        event = "cw-raidjob:client:start",
-                        jobId = i,
-                        icon = "fas fa-circle",
-                        label = title,
-                        canInteract = function()    
-                            if onRun then return false end
-                            if Config.UseTokens then
-                                if v.Token then
-                                    return canInteract(v.Token)
-                                end
-                            end
-                             if v.Boss.available then
-                                 if v.Boss.available.from > v.Boss.available.to then
-                                     if GetClockHours() >= v.Boss.available.from or GetClockHours() < v.Boss.available.to then return true else return false end
-                                 else
-                                     if GetClockHours() >= v.Boss.available.from and GetClockHours() < v.Boss.available.to then return true else return false end
-                                 end
-                             end
+        local pedId = #Entities+1
+        Entities[pedId] = CreatePed(0, boss.model, boss.coords.x, boss.coords.y, boss.coords.z, boss.coords.w , false, false)
+        SetPedFleeAttributes(Entities[pedId], 0, 0)
+        SetPedDiesWhenInjured(Entities[pedId], false)
+        SetPedKeepTask(Entities[pedId], true)
+        SetBlockingOfNonTemporaryEvents(Entities[pedId], true)
+        SetEntityInvincible(Entities[pedId], true)
+        FreezeEntityPosition(Entities[pedId], true)
+        TaskStartScenarioInPlace(Entities[pedId], animation, 0, true)
+        exports['qb-target']:AddTargetEntity(Entities[pedId], {
+          options = {
+            {
+              num = 1,
+              type = "client",
+              icon = 'fas fa-circle',
+              label = title,
+              action = function()
+                TriggerEvent('cw-raidjob:client:start', i)
+              end,
+              canInteract = function()
+                    if onRun then return false end
+                    if Config.UseTokens then
+                        if v.Token then
+                            return canInteract(v.Token)
                         end
-                    },
-                    { 
-                        type = "client",
-                        event = "cw-raidjob:client:reward",
-                        icon = "fas fa-circle",
-                        label = "Check Product",
-                        jobId = i,
-                        canInteract = function()
-                            local playerCoords = GetEntityCoords(PlayerPedId())
-                            if GetDistanceBetweenCoords(playerCoords,v.Boss.coords) > 3 then return false end
-                            local itemInPockets = QBCore.Functions.HasItem(v.Items.FetchItemContents)
-                            if itemInPockets then return true else return false end
+                    end
+                    if v.Boss.available then
+                        if v.Boss.available.from > v.Boss.available.to then
+                            if GetClockHours() >= v.Boss.available.from or GetClockHours() < v.Boss.available.to then return true else return false end
+                        else
+                            if GetClockHours() >= v.Boss.available.from and GetClockHours() < v.Boss.available.to then return true else return false end
                         end
-                    },       
-                },
-                distance = 3.0 
+                    end
+                end,
             },
-            spawnNow = true,
+            {
+                num = 2,
+                type = "client",
+                icon = "fas fa-circle",
+                label = "Check Product",
+                action = function()
+                  TriggerEvent('cw-raidjob:client:reward', i)
+                end,
+                canInteract = function()
+                    local playerCoords = GetEntityCoords(PlayerPedId())
+                    if GetDistanceBetweenCoords(playerCoords,v.Boss.coords) > 3 then return false end
+                    local itemInPockets = QBCore.Functions.HasItem(v.Items.FetchItemContents)
+                    if itemInPockets then return true else return false end
+                end
+            }
+          },
+          distance = 3.0,
         })
     end
-
 end)
 
 local function CreateCaseInteraction()
@@ -267,8 +269,8 @@ end
 
 ---
 RegisterNetEvent('cw-raidjob:client:start', function (data)
-    if CurrentCops >= Config.Jobs[data.jobId].MinimumPolice then
-        currentJobId = data.jobId
+    if CurrentCops >= Config.Jobs[data].MinimumPolice then
+        currentJobId = data
         QBCore.Functions.TriggerCallback("cw-raidjob:server:coolc",function(isCooldown)
             if not isCooldown then
                 TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
@@ -604,7 +606,7 @@ RegisterNetEvent('cw-raidjob:client:items', function()
 end)
 
 RegisterNetEvent('cw-raidjob:client:reward', function(data)
-    local jobId = data.jobId
+    local jobId = data
     local items = Config.Jobs[jobId].Items
     if useDebug then
         print('checking pockets for ', QBCore.Shared.Items[items.FetchItemContents].name)
