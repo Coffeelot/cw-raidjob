@@ -288,7 +288,7 @@ RegisterNetEvent('cw-raidjob:client:start', function (data)
             else
                 QBCore.Functions.Notify(Lang:t("error.someone_recently_did_this"), 'error')
             end
-        end)    
+        end, currentJobId)    
     else
         QBCore.Functions.Notify(Lang:t("error.cannot_do_this_right_now"), 'error')
     end
