@@ -1,5 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local Cooldown = false
+local Cooldown = {}
 local useDebug = Config.Debug
 
 
@@ -37,21 +37,20 @@ end)
 
 -- cool down for job
 RegisterServerEvent('cw-raidjob:server:coolout', function(jobId)
-    Cooldown = true
+    Cooldown[jobId] = true
     local jobCooldown = Config.Jobs[jobId].Cooldown or Config.Cooldown
     local timer = jobCooldown * 1000
     while timer > 0 do
         Wait(1000)
         timer = timer - 1000
         if timer == 0 then
-            Cooldown = false
+            Cooldown[jobId] = false
         end
     end
 end)
 
-QBCore.Functions.CreateCallback("cw-raidjob:server:coolc",function(source, cb)
-
-    if Cooldown then
+QBCore.Functions.CreateCallback("cw-raidjob:server:coolc",function(source, cb, jobId)
+    if Cooldown[jobId] then
         cb(true)
     else
         cb(false)
