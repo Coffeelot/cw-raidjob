@@ -20,6 +20,10 @@ local npcs = {
 
 local vehicles = {}
 
+RegisterNetEvent('police:SetCopCount', function(amount)
+    CurrentCops = amount
+end)
+
 local function CleanUp()
     if useDebug then
         print('Cleanup')
@@ -265,28 +269,34 @@ end
 
 ---
 RegisterNetEvent('cw-raidjob:client:start', function (data)
-    if CurrentCops >= Config.Jobs[data.jobId].MinimumPolice then
+    QBCore.Functions.TriggerCallback('police:GetCops', function(amount)
+        if amount >= Config.Jobs[data.jobId].MinimumPolice then
         currentJobId = data.jobId
         QBCore.Functions.TriggerCallback("cw-raidjob:server:coolc",function(isCooldown)
             if not isCooldown then
-                TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
-                QBCore.Functions.Progressbar("start_job", Lang:t('info.talking_to_boss'), 10000, false, true, {
-                    disableMovement = true,
-                    disableCarMovement = true,
-                    disableMouse = false,
-                    disableCombat = true,
-                }, {
-                }, {}, {}, function() -- Done
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                local Player = QBCore.Functions.GetPlayerData()
+                if Player.money['cash'] >= Config.Jobs[data.jobId].RunCost then
                     TriggerServerEvent('cw-raidjob:server:startr', currentJobId)
-                end, function() -- Cancel
-                    TriggerEvent('animations:client:EmoteCommandStart', {"c"})
-                    QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
-                end)
+                    TriggerEvent('animations:client:EmoteCommandStart', {"idle11"})
+                    QBCore.Functions.Progressbar("start_job", Lang:t('info.talking_to_boss'), 15000, false, true, {
+                        disableMovement = true,
+                        disableCarMovement = true,
+                        disableMouse = false,
+                        disableCombat = true,
+                    }, {
+                    }, {}, {}, function() -- Done
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                    end, function() -- Cancel
+                        TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+                        QBCore.Functions.Notify(Lang:t("error.canceled"), 'error')
+                    end)
+                else
+                    QBCore.Functions.Notify(Lang:t('error.you_dont_have_enough_money'), 'error', 5000)
+                end
             else
                 QBCore.Functions.Notify(Lang:t("error.someone_recently_did_this"), 'error')
             end
-        end)    
+        end)
     else
         QBCore.Functions.Notify(Lang:t("error.cannot_do_this_right_now"), 'error')
     end
@@ -362,7 +372,7 @@ local function SpawnGuards()
         if random == 2 then
             TaskGuardCurrentPosition(npcs['npcguards'][k], 10.0, 10.0, 1)
         end
-        Wait(1000) -- cheap way to fix npcs not spawning
+        Wait(700) -- cheap way to fix npcs not spawning
     end
 
     SetRelationshipBetweenGroups(0, 'npcguards', 'npcguards')
