@@ -1,13 +1,13 @@
-local QBCore = exports['qb-core']:GetCoreObject() 
-local Cooldown = false
+local QBCore = exports['qb-core']:GetCoreObject()
+local Cooldown = {}
 local useDebug = Config.Debug
 
 
 RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
     local src = source
 	local Player = QBCore.Functions.GetPlayer(src)
-    
-    
+
+
     if Config.UseTokens and Config.Jobs[jobId].Token then
         TriggerEvent('cw-tokens:server:TakeToken', src, Config.Jobs[jobId].Token)
         Player.Functions.AddItem("casekey", 1)
@@ -17,7 +17,7 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
         TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
         TriggerClientEvent("cw-raidjob:client:runactivate", src)
         TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
-        TriggerEvent('cw-raidjob:server:coolout')
+        TriggerEvent('cw-raidjob:server:coolout', jobId)
     else
         if Player.PlayerData.money['cash'] >= Config.Jobs[jobId].RunCost then
             Player.Functions.RemoveMoney('cash', Config.Jobs[jobId].RunCost, "Running Costs")
@@ -28,7 +28,7 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "add")
             TriggerClientEvent("cw-raidjob:client:runactivate", src)
             TriggerClientEvent('QBCore:Notify', src, Lang:t("success.send_email_right_now"), 'success')
-            TriggerEvent('cw-raidjob:server:coolout')
+            TriggerEvent('cw-raidjob:server:coolout', jobId)
         else
             TriggerClientEvent('QBCore:Notify', source, Lang:t("error.you_dont_have_enough_money"), 'error')
         end
@@ -36,24 +36,24 @@ RegisterServerEvent('cw-raidjob:server:startr', function(jobId)
 end)
 
 -- cool down for job
-RegisterServerEvent('cw-raidjob:server:coolout', function()
-    Cooldown = true
-    local timer = Config.Cooldown * 1000
+RegisterServerEvent('cw-raidjob:server:coolout', function(jobId)
+    Cooldown[jobId] = true
+    local jobCooldown = Config.Jobs[jobId].Cooldown or Config.Cooldown
+    local timer = jobCooldown * 1000
     while timer > 0 do
         Wait(1000)
         timer = timer - 1000
         if timer == 0 then
-            Cooldown = false
+            Cooldown[jobId] = false
         end
     end
 end)
 
-QBCore.Functions.CreateCallback("cw-raidjob:server:coolc",function(source, cb)
-    
-    if Cooldown then
+QBCore.Functions.CreateCallback("cw-raidjob:server:coolc",function(source, cb, jobId)
+    if Cooldown[jobId] then
         cb(true)
     else
-        cb(false) 
+        cb(false)
     end
 end)
 
@@ -83,7 +83,7 @@ RegisterServerEvent('cw-raidjob:server:rewardpayout', function (jobId)
         if useDebug then
            print('chance for '..v.Item..': '..chance)
         end
-        if chance < v.Chance then 
+        if chance < v.Chance then
             Player.Functions.AddItem(v.Item, v.Amount)
             TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[v.Item], "add")
         end
@@ -107,7 +107,7 @@ RegisterServerEvent('cw-raidjob:server:cleanUp', function (jobId)
 
     Player.Functions.RemoveItem(items.FetchItem, 1)
     Player.Functions.RemoveItem("casekey", 1)
-    
+
 	TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[items.FetchItem], "remove")
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["casekey"], "remove")
 end)
