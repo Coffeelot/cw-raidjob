@@ -1,4 +1,9 @@
+> ## THIS SCRIPT IS NOW END OF LIFE. NO FEATURE UPDATES WILL BE DONE. NO SUPPORT WILL BE GIVEN.
+> Please see **[RAIDJOB2](https://github.com/Coffeelot/cw-raidjob2)** For the reworked version. It's like a lot cooler already. 🦆 
+
+
 # PVE Raid Job 🔫
+
 
 We loved the idea of PVE combat jobs and the [PS-Methjob](https://github.com/Project-Sloth/ps-methrun) was such a great template. We decided to generalize it so more jobs with similar structure could be created without any coding. We kept the original job in the config as an example. 
 
